@@ -1,0 +1,1466 @@
+{
+  "log_path": "C:\\Users\\Bilbaukai\\AppData\\Roaming\\zaap\\gamesLogs\\wakfu\\logs\\wakfu_chat.log",
+  "zoom_factor": 1.2,
+  "always_on_top": true,
+  "tracked_players": [
+    "Chatte-Enbouchinkouin",
+    "Taipav-Enu-Alasoirai",
+    "Témala-Taydumask",
+    "Soldier-Heal",
+    "Bilbaukok",
+    "Bilbosa",
+    "Tamair-Lachyaine",
+    "Linkario",
+    "Nodraxo",
+    "Pandarouge",
+    "Enrya"
+  ],
+  "window_width": 556.6666,
+  "window_height": 656.1111,
+  "mode": "mono",
+  "players_to_include": 1,
+  "permanent_archives": [
+    {
+      "name": "salle 2 gelax",
+      "players_involved": "Linkario, Nodraxo, Chatte-Enbouchinkouin, Enrya, Pandarouge",
+      "total_turns": 2,
+      "damages": [
+        [
+          "Linkario",
+          56720
+        ],
+        [
+          "Nodraxo",
+          32031
+        ],
+        [
+          "Chatte-Enbouchinkouin",
+          4760
+        ],
+        [
+          "Enrya",
+          593
+        ],
+        [
+          "Pandarouge",
+          112
+        ]
+      ],
+      "details_history": {
+        "Enrya": [
+          {
+            "spell": "Revitalisation",
+            "hits": [
+              186
+            ],
+            "total": 186,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Revitalisation",
+            "hits": [
+              213,
+              194
+            ],
+            "total": 407,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Revitalisation",
+            "hits": [
+              0
+            ],
+            "total": 0,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Revitalisation",
+            "hits": [
+              0
+            ],
+            "total": 0,
+            "turn": 2,
+            "is_indirect": false
+          }
+        ],
+        "Chatte-Enbouchinkouin": [
+          {
+            "spell": "All in (Critiques)",
+            "hits": [
+              2955
+            ],
+            "total": 2955,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "sort de l'invocation",
+            "hits": [
+              0
+            ],
+            "total": 0,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "sort de l'invocation",
+            "hits": [
+              340
+            ],
+            "total": 340,
+            "turn": 2,
+            "is_indirect": false
+          }
+        ],
+        "Linkario": [
+          {
+            "spell": "Épée céleste (Critiques)",
+            "hits": [
+              1518
+            ],
+            "total": 1518,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Jugement",
+            "hits": [
+              415
+            ],
+            "total": 415,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Éventrail (Critiques)",
+            "hits": [
+              516,
+              827
+            ],
+            "total": 1343,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Éventrail",
+            "hits": [
+              356
+            ],
+            "total": 356,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Uppercut",
+            "hits": [
+              891
+            ],
+            "total": 891,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Épée de Iop",
+            "hits": [
+              555,
+              1369,
+              1083
+            ],
+            "total": 3007,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Uppercut",
+            "hits": [
+              409
+            ],
+            "total": 409,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Jugement",
+            "hits": [
+              434
+            ],
+            "total": 434,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Égaré",
+            "hits": [
+              565
+            ],
+            "total": 565,
+            "turn": 1,
+            "is_indirect": true
+          },
+          {
+            "spell": "Égaré",
+            "hits": [
+              1186
+            ],
+            "total": 1186,
+            "turn": 1,
+            "is_indirect": true
+          },
+          {
+            "spell": "Égaré",
+            "hits": [
+              1168
+            ],
+            "total": 1168,
+            "turn": 1,
+            "is_indirect": true
+          },
+          {
+            "spell": "Colère de Iop",
+            "hits": [
+              1143,
+              2797,
+              2399,
+              1892
+            ],
+            "total": 8231,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Épée céleste (Critiques)",
+            "hits": [
+              1338
+            ],
+            "total": 1338,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Éventrail (Critiques)",
+            "hits": [
+              452
+            ],
+            "total": 452,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Éventrail (Critiques)",
+            "hits": [
+              453
+            ],
+            "total": 453,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Uppercut (Critiques)",
+            "hits": [
+              1146
+            ],
+            "total": 1146,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Uppercut (Critiques)",
+            "hits": [
+              1243
+            ],
+            "total": 1243,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "sort de l'invocation",
+            "hits": [
+              379
+            ],
+            "total": 379,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Torgnole (Critiques)",
+            "hits": [
+              1076
+            ],
+            "total": 1076,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Rafale (Critiques)",
+            "hits": [
+              458
+            ],
+            "total": 458,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Éventrail",
+            "hits": [
+              265,
+              531
+            ],
+            "total": 796,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Éventrail",
+            "hits": [
+              212
+            ],
+            "total": 212,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Égaré",
+            "hits": [
+              1256
+            ],
+            "total": 1256,
+            "turn": 2,
+            "is_indirect": true
+          },
+          {
+            "spell": "Égaré",
+            "hits": [
+              1382
+            ],
+            "total": 1382,
+            "turn": 2,
+            "is_indirect": true
+          },
+          {
+            "spell": "Égaré",
+            "hits": [
+              1038
+            ],
+            "total": 1038,
+            "turn": 2,
+            "is_indirect": true
+          },
+          {
+            "spell": "Égaré",
+            "hits": [
+              1838
+            ],
+            "total": 1838,
+            "turn": 2,
+            "is_indirect": true
+          },
+          {
+            "spell": "Colère de Iop (Critiques)",
+            "hits": [
+              2512,
+              2763,
+              3083,
+              2075,
+              3677
+            ],
+            "total": 14110,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Super Iop Punch",
+            "hits": [
+              4402
+            ],
+            "total": 4402,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Épée céleste (Critiques)",
+            "hits": [
+              991,
+              984
+            ],
+            "total": 1975,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Éventrail (Critiques)",
+            "hits": [
+              529
+            ],
+            "total": 529,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Éventrail",
+            "hits": [
+              333
+            ],
+            "total": 333,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Uppercut",
+            "hits": [
+              833
+            ],
+            "total": 833,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Uppercut",
+            "hits": [
+              857
+            ],
+            "total": 857,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Uppercut (Critiques)",
+            "hits": [
+              1091
+            ],
+            "total": 1091,
+            "turn": 2,
+            "is_indirect": false
+          }
+        ],
+        "Pandarouge": [
+          {
+            "spell": "Coup Laiteux",
+            "hits": [
+              35
+            ],
+            "total": 35,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Coup Laiteux",
+            "hits": [
+              56
+            ],
+            "total": 56,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Triple Karma Leet",
+            "hits": [
+              21
+            ],
+            "total": 21,
+            "turn": 2,
+            "is_indirect": false
+          }
+        ],
+        "Nodraxo": [
+          {
+            "spell": "Fourberie",
+            "hits": [
+              890
+            ],
+            "total": 890,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Attaque perfide (Critiques)",
+            "hits": [
+              2207
+            ],
+            "total": 2207,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Coup pénétrant (Critiques)",
+            "hits": [
+              882,
+              832,
+              2104
+            ],
+            "total": 3818,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Attaque létale (Critiques)",
+            "hits": [
+              3207
+            ],
+            "total": 3207,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Arnaque (Critiques)",
+            "hits": [
+              2046
+            ],
+            "total": 2046,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Hémorragie",
+            "hits": [
+              914
+            ],
+            "total": 914,
+            "turn": 1,
+            "is_indirect": true
+          },
+          {
+            "spell": "Attaque perfide (Critiques)",
+            "hits": [
+              2057
+            ],
+            "total": 2057,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Hémorragie",
+            "hits": [
+              200
+            ],
+            "total": 200,
+            "turn": 1,
+            "is_indirect": true
+          },
+          {
+            "spell": "Hémorragie",
+            "hits": [
+              260
+            ],
+            "total": 260,
+            "turn": 1,
+            "is_indirect": true
+          },
+          {
+            "spell": "Coup pénétrant",
+            "hits": [
+              501,
+              1018,
+              460,
+              951
+            ],
+            "total": 2930,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Châtiment (Critiques)",
+            "hits": [
+              2478,
+              2731
+            ],
+            "total": 5209,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Hémorragie",
+            "hits": [
+              35
+            ],
+            "total": 35,
+            "turn": 1,
+            "is_indirect": true
+          },
+          {
+            "spell": "Hémorragie",
+            "hits": [
+              31
+            ],
+            "total": 31,
+            "turn": 1,
+            "is_indirect": true
+          },
+          {
+            "spell": "Premier Sang",
+            "hits": [
+              492,
+              434
+            ],
+            "total": 926,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Saignée mortelle (Critiques)",
+            "hits": [
+              1171
+            ],
+            "total": 1171,
+            "turn": 2,
+            "is_indirect": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "salle boss gelax",
+      "players_involved": "Linkario, Nodraxo, Chatte-Enbouchinkouin, Enrya, Pandarouge",
+      "total_turns": 5,
+      "damages": [
+        [
+          "Linkario",
+          72591
+        ],
+        [
+          "Nodraxo",
+          45997
+        ],
+        [
+          "Chatte-Enbouchinkouin",
+          24617
+        ],
+        [
+          "Enrya",
+          212
+        ],
+        [
+          "Pandarouge",
+          137
+        ]
+      ],
+      "details_history": {
+        "Chatte-Enbouchinkouin": [
+          {
+            "spell": "All in (Critiques)",
+            "hits": [
+              3177
+            ],
+            "total": 3177,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Feulement (Critiques)",
+            "hits": [
+              3221,
+              2010
+            ],
+            "total": 5231,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Bataille (Critiques)",
+            "hits": [
+              2625
+            ],
+            "total": 2625,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "sort de l'invocation",
+            "hits": [
+              461
+            ],
+            "total": 461,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "sort de l'invocation",
+            "hits": [
+              235
+            ],
+            "total": 235,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "sort de l'invocation",
+            "hits": [
+              252
+            ],
+            "total": 252,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "sort de l'invocation",
+            "hits": [
+              276
+            ],
+            "total": 276,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "sort de l'invocation",
+            "hits": [
+              269
+            ],
+            "total": 269,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "All in (Critiques)",
+            "hits": [
+              1023
+            ],
+            "total": 1023,
+            "turn": 3,
+            "is_indirect": false
+          },
+          {
+            "spell": "Dé six (Critiques)",
+            "hits": [
+              1273
+            ],
+            "total": 1273,
+            "turn": 3,
+            "is_indirect": false
+          },
+          {
+            "spell": "Bataille (Critiques)",
+            "hits": [
+              845
+            ],
+            "total": 845,
+            "turn": 3,
+            "is_indirect": false
+          },
+          {
+            "spell": "sort de l'invocation",
+            "hits": [
+              283
+            ],
+            "total": 283,
+            "turn": 3,
+            "is_indirect": false
+          },
+          {
+            "spell": "sort de l'invocation",
+            "hits": [
+              302
+            ],
+            "total": 302,
+            "turn": 3,
+            "is_indirect": false
+          },
+          {
+            "spell": "sort de l'invocation",
+            "hits": [
+              329
+            ],
+            "total": 329,
+            "turn": 3,
+            "is_indirect": false
+          },
+          {
+            "spell": "sort de l'invocation",
+            "hits": [
+              134
+            ],
+            "total": 134,
+            "turn": 3,
+            "is_indirect": false
+          },
+          {
+            "spell": "All in (Critiques)",
+            "hits": [
+              2465
+            ],
+            "total": 2465,
+            "turn": 4,
+            "is_indirect": false
+          },
+          {
+            "spell": "Dé six (Critiques)",
+            "hits": [
+              2344
+            ],
+            "total": 2344,
+            "turn": 4,
+            "is_indirect": false
+          },
+          {
+            "spell": "Bataille (Critiques)",
+            "hits": [
+              1557
+            ],
+            "total": 1557,
+            "turn": 4,
+            "is_indirect": false
+          },
+          {
+            "spell": "sort de l'invocation",
+            "hits": [
+              333
+            ],
+            "total": 333,
+            "turn": 4,
+            "is_indirect": false
+          }
+        ],
+        "Linkario": [
+          {
+            "spell": "Torgnole (Critiques)",
+            "hits": [
+              886
+            ],
+            "total": 886,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Rafale",
+            "hits": [
+              321
+            ],
+            "total": 321,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Éventrail",
+            "hits": [
+              257,
+              641
+            ],
+            "total": 898,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Éventrail (Critiques)",
+            "hits": [
+              437
+            ],
+            "total": 437,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Uppercut (Critiques)",
+            "hits": [
+              1107
+            ],
+            "total": 1107,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Épée de Iop",
+            "hits": [
+              1137,
+              1163
+            ],
+            "total": 2300,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Uppercut (Critiques)",
+            "hits": [
+              1159
+            ],
+            "total": 1159,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Rafale (Critiques)",
+            "hits": [
+              579
+            ],
+            "total": 579,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Égaré",
+            "hits": [
+              1065
+            ],
+            "total": 1065,
+            "turn": 1,
+            "is_indirect": true
+          },
+          {
+            "spell": "Égaré",
+            "hits": [
+              1350
+            ],
+            "total": 1350,
+            "turn": 1,
+            "is_indirect": true
+          },
+          {
+            "spell": "Égaré",
+            "hits": [
+              1370
+            ],
+            "total": 1370,
+            "turn": 1,
+            "is_indirect": true
+          },
+          {
+            "spell": "Colère de Iop (Critiques)",
+            "hits": [
+              1704,
+              2161,
+              2740
+            ],
+            "total": 6605,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Éventrail (Critiques)",
+            "hits": [
+              452
+            ],
+            "total": 452,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Éventrail",
+            "hits": [
+              285
+            ],
+            "total": 285,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Uppercut",
+            "hits": [
+              571
+            ],
+            "total": 571,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Uppercut (Critiques)",
+            "hits": [
+              1064
+            ],
+            "total": 1064,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "sort de l'invocation",
+            "hits": [
+              0
+            ],
+            "total": 0,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Épée céleste",
+            "hits": [
+              1499
+            ],
+            "total": 1499,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Jugement",
+            "hits": [
+              604
+            ],
+            "total": 604,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Éventrail (Critiques)",
+            "hits": [
+              744,
+              1488
+            ],
+            "total": 2232,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Éventrail (Critiques)",
+            "hits": [
+              703
+            ],
+            "total": 703,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Uppercut",
+            "hits": [
+              864
+            ],
+            "total": 864,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Égaré",
+            "hits": [
+              1210
+            ],
+            "total": 1210,
+            "turn": 2,
+            "is_indirect": true
+          },
+          {
+            "spell": "Égaré",
+            "hits": [
+              1172
+            ],
+            "total": 1172,
+            "turn": 2,
+            "is_indirect": true
+          },
+          {
+            "spell": "Égaré",
+            "hits": [
+              1814
+            ],
+            "total": 1814,
+            "turn": 2,
+            "is_indirect": true
+          },
+          {
+            "spell": "Égaré",
+            "hits": [
+              1064
+            ],
+            "total": 1064,
+            "turn": 2,
+            "is_indirect": true
+          },
+          {
+            "spell": "Colère de Iop",
+            "hits": [
+              2640,
+              1493,
+              2558,
+              3960,
+              1858
+            ],
+            "total": 12509,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "sort de l'invocation",
+            "hits": [
+              117
+            ],
+            "total": 117,
+            "turn": 3,
+            "is_indirect": false
+          },
+          {
+            "spell": "sort de l'invocation",
+            "hits": [
+              242
+            ],
+            "total": 242,
+            "turn": 3,
+            "is_indirect": false
+          },
+          {
+            "spell": "Égaré",
+            "hits": [
+              836
+            ],
+            "total": 836,
+            "turn": 4,
+            "is_indirect": true
+          },
+          {
+            "spell": "Égaré",
+            "hits": [
+              1690
+            ],
+            "total": 1690,
+            "turn": 4,
+            "is_indirect": true
+          },
+          {
+            "spell": "Colère de Iop (Critiques)",
+            "hits": [
+              2291,
+              1672,
+              3380
+            ],
+            "total": 7343,
+            "turn": 4,
+            "is_indirect": false
+          },
+          {
+            "spell": "Épée céleste (Critiques)",
+            "hits": [
+              1426
+            ],
+            "total": 1426,
+            "turn": 4,
+            "is_indirect": false
+          },
+          {
+            "spell": "Jugement",
+            "hits": [
+              521
+            ],
+            "total": 521,
+            "turn": 4,
+            "is_indirect": false
+          },
+          {
+            "spell": "Éventrail (Critiques)",
+            "hits": [
+              510
+            ],
+            "total": 510,
+            "turn": 4,
+            "is_indirect": false
+          },
+          {
+            "spell": "Éventrail (Critiques)",
+            "hits": [
+              504
+            ],
+            "total": 504,
+            "turn": 4,
+            "is_indirect": false
+          },
+          {
+            "spell": "Uppercut (Critiques)",
+            "hits": [
+              1275
+            ],
+            "total": 1275,
+            "turn": 4,
+            "is_indirect": false
+          },
+          {
+            "spell": "Super Iop Punch (Critiques)",
+            "hits": [
+              9171
+            ],
+            "total": 9171,
+            "turn": 5,
+            "is_indirect": false
+          }
+        ],
+        "Nodraxo": [
+          {
+            "spell": "Fourberie",
+            "hits": [
+              790
+            ],
+            "total": 790,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Attaque perfide (Critiques)",
+            "hits": [
+              2431
+            ],
+            "total": 2431,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Coup pénétrant",
+            "hits": [
+              476,
+              1209,
+              749
+            ],
+            "total": 2434,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Arnaque (Critiques)",
+            "hits": [
+              1918
+            ],
+            "total": 1918,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Hémorragie",
+            "hits": [
+              838
+            ],
+            "total": 838,
+            "turn": 1,
+            "is_indirect": true
+          },
+          {
+            "spell": "Attaque létale (Critiques)",
+            "hits": [
+              2247
+            ],
+            "total": 2247,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Attaque létale",
+            "hits": [
+              794
+            ],
+            "total": 794,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Attaque perfide",
+            "hits": [
+              1901
+            ],
+            "total": 1901,
+            "turn": 3,
+            "is_indirect": false
+          },
+          {
+            "spell": "Coup pénétrant (Critiques)",
+            "hits": [
+              760,
+              813,
+              1427
+            ],
+            "total": 3000,
+            "turn": 3,
+            "is_indirect": false
+          },
+          {
+            "spell": "Attaque perfide (Critiques)",
+            "hits": [
+              1872
+            ],
+            "total": 1872,
+            "turn": 3,
+            "is_indirect": false
+          },
+          {
+            "spell": "Coup pénétrant (Critiques)",
+            "hits": [
+              521,
+              1041,
+              493
+            ],
+            "total": 2055,
+            "turn": 3,
+            "is_indirect": false
+          },
+          {
+            "spell": "Arnaque (Critiques)",
+            "hits": [
+              1477
+            ],
+            "total": 1477,
+            "turn": 3,
+            "is_indirect": false
+          },
+          {
+            "spell": "Hémorragie",
+            "hits": [
+              636
+            ],
+            "total": 636,
+            "turn": 3,
+            "is_indirect": true
+          },
+          {
+            "spell": "Châtiment (Critiques)",
+            "hits": [
+              1580
+            ],
+            "total": 1580,
+            "turn": 3,
+            "is_indirect": false
+          },
+          {
+            "spell": "Hémorragie",
+            "hits": [
+              764
+            ],
+            "total": 764,
+            "turn": 4,
+            "is_indirect": true
+          },
+          {
+            "spell": "Attaque perfide (Critiques)",
+            "hits": [
+              1398
+            ],
+            "total": 1398,
+            "turn": 4,
+            "is_indirect": false
+          },
+          {
+            "spell": "Hémorragie",
+            "hits": [
+              0
+            ],
+            "total": 0,
+            "turn": 4,
+            "is_indirect": true
+          },
+          {
+            "spell": "Hémorragie",
+            "hits": [
+              656
+            ],
+            "total": 656,
+            "turn": 4,
+            "is_indirect": true
+          },
+          {
+            "spell": "Coup pénétrant (Critiques)",
+            "hits": [
+              559,
+              1770,
+              1663
+            ],
+            "total": 3992,
+            "turn": 4,
+            "is_indirect": false
+          },
+          {
+            "spell": "Hémorragie",
+            "hits": [
+              442
+            ],
+            "total": 442,
+            "turn": 4,
+            "is_indirect": true
+          },
+          {
+            "spell": "Premier Sang",
+            "hits": [
+              1126
+            ],
+            "total": 1126,
+            "turn": 4,
+            "is_indirect": false
+          },
+          {
+            "spell": "Hémorragie",
+            "hits": [
+              2976
+            ],
+            "total": 2976,
+            "turn": 4,
+            "is_indirect": true
+          },
+          {
+            "spell": "Mise à mort",
+            "hits": [
+              7479
+            ],
+            "total": 7479,
+            "turn": 4,
+            "is_indirect": false
+          },
+          {
+            "spell": "Hémorragie",
+            "hits": [
+              1057
+            ],
+            "total": 1057,
+            "turn": 4,
+            "is_indirect": true
+          },
+          {
+            "spell": "Saignée mortelle (Critiques)",
+            "hits": [
+              2134
+            ],
+            "total": 2134,
+            "turn": 4,
+            "is_indirect": false
+          }
+        ],
+        "Enrya": [
+          {
+            "spell": "Revitalisation",
+            "hits": [
+              212
+            ],
+            "total": 212,
+            "turn": 3,
+            "is_indirect": false
+          },
+          {
+            "spell": "Revitalisation",
+            "hits": [
+              0
+            ],
+            "total": 0,
+            "turn": 4,
+            "is_indirect": false
+          },
+          {
+            "spell": "Revitalisation",
+            "hits": [
+              0
+            ],
+            "total": 0,
+            "turn": 4,
+            "is_indirect": false
+          }
+        ],
+        "Pandarouge": [
+          {
+            "spell": "Coup Laiteux",
+            "hits": [
+              56
+            ],
+            "total": 56,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Coup Laiteux",
+            "hits": [
+              44
+            ],
+            "total": 44,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Coup Laiteux",
+            "hits": [
+              37
+            ],
+            "total": 37,
+            "turn": 5,
+            "is_indirect": false
+          }
+        ]
+      }
+    }
+  ],
+  "combat_counter": 4
+}

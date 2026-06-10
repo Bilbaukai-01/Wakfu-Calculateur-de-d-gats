@@ -1,0 +1,18 @@
+[package]
+name = "Wakfu_calculateur"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+eframe = "0.27.2"
+egui = "0.27.2"
+# On remplace all_hermes par all_loaders
+egui_extras = { version = "0.27.2", features = ["image", "all_loaders"] }
+image = { version = "0.24", features = ["png", "jpeg"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+regex = "1.10"
+rfd = "0.14"
+winres = "0.1"
+chrono = "0.4"
+self_update = { version = "0.41.0", features = ["archive-zip", "compression-zip-deflate"] }
