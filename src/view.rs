@@ -644,7 +644,7 @@ impl eframe::App for MyApp {
                     s.reset_to_defaults();
                 }
                             });
-                                // --- SECTION MISE À JOUR ---
+                                                               // --- SECTION MISE À JOUR ---
                                 ui.add_space(15.0);
                                 ui.separator();
                                 ui.add_space(5.0);
@@ -663,7 +663,25 @@ impl eframe::App for MyApp {
 
                                     ui.add_space(5.0);
 
-                                    if s.config.maj_disponible {
+                                    // 1. PRIORITÉ : Si la mise à jour est prête, on affiche TOUJOURS le bouton vert de Redémarrage !
+                                    if s.config.maj_prete_pour_redemarrage {
+                                        let redemarrer_btn = egui::Button::new("✨ Redémarrer pour appliquer la mise à jour")
+                                            .fill(egui::Color32::from_rgb(34, 139, 34)); // Joli bouton vert forêt
+
+                                        if ui.add(redemarrer_btn).clicked() {
+                                            use std::process::Command;
+                                            use std::env;
+                                            // Récupère le chemin du .exe actuel (qui a été remplacé sur le disque)
+                                            if let Ok(chemin_exe) = env::current_exe() {
+                                                // Relance l'application
+                                                let _ = Command::new(chemin_exe).spawn();
+                                            }
+                                            // Ferme la version actuelle
+                                            ctx.send_viewport_cmd(egui::ViewportCommand::Close);
+                                        }
+                                    } 
+                                    // 2. Si une mise à jour est disponible mais pas encore téléchargée
+                                    else if s.config.maj_disponible {
                                         ui.horizontal(|ui| {
                                             ui.colored_label(egui::Color32::from_rgb(250, 200, 50), "⚠️ Nouvelle version disponible !");
                                             
@@ -681,6 +699,9 @@ impl eframe::App for MyApp {
                                                         if status.updated() {
                                                             s.config.statut_maj = format!("Succès ! v{} installée. Redémarrez.", status.version());
                                                             s.config.maj_disponible = false;
+                                                            s.config.maj_prete_pour_redemarrage = true; // On l'active ici !
+                                                            crate::persistence::save_config(&s.config); // On sauvegarde l'état
+                                                            ctx.request_repaint(); // Force le rafraîchissement immédiat de l'écran
                                                         } else {
                                                             s.config.statut_maj = "Déjà à jour".to_string();
                                                         }
@@ -691,7 +712,9 @@ impl eframe::App for MyApp {
                                                 }
                                             }
                                         });
-                                    } else {
+                                    } 
+                                    // 3. Sinon, on affiche le bouton standard pour vérifier manuellement
+                                    else {
                                         // Bouton pour forcer manuellement une vérification si l'utilisateur le souhaite
                                         if ui.button("🔄 Vérifier manuellement").clicked() {
                                             s.config.statut_maj = "Vérification en cours...".to_string();
@@ -718,6 +741,7 @@ impl eframe::App for MyApp {
                                         }
                                     }
                                 });
+
                         });
                     });
                 }

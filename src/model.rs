@@ -53,23 +53,16 @@ pub struct AppConfig {
     pub statut_maj: String,
     #[serde(skip)]
     pub maj_disponible: bool,
+    pub maj_prete_pour_redemarrage: bool,
 }
 
 impl Default for AppConfig {
     fn default() -> Self {
         Self {
-            log_path: r"C:\Users\Bilbaukai\AppData\Roaming\zaap\gamesLogs\wakfu\logs\wakfu_chat.log".to_string(),
+            log_path: "".to_string(), //le fichier les dlogs
             zoom_factor: 1.2,
             always_on_top: true,
-            tracked_players: vec![
-                "Chatte-Enbouchinkouin".to_string(),
-                "Taipav-Enu-Alasoirai".to_string(),
-                "Témala-Taydumask".to_string(),
-                "Soldier-Heal".to_string(),
-                "Bilbaukok".to_string(),
-                "Bilbosa".to_string(),
-                "Tamair-Lachyaine".to_string(),
-            ],
+            tracked_players: Vec::new(), //les noms des joueurs suivis
             window_width: 500.0,
             window_height: 650.0,
             mode: "mono".to_string(),
@@ -79,6 +72,7 @@ impl Default for AppConfig {
 
             statut_maj: "Recherche de mise à jour...".to_string(),
             maj_disponible: false,
+            maj_prete_pour_redemarrage: false,
         }
     }
 }
@@ -154,7 +148,20 @@ impl AppState {
     }
 
     pub fn reset_to_defaults(&mut self) {
+// 1. sauvegarde temporairement les données utilisateur qu'on veut ABSOLUMENT garder
+        let saved_log_path = self.config.log_path.clone();
+        let saved_tracked_players = self.config.tracked_players.clone();
+        let saved_archives = self.config.permanent_archives.clone(); // Optionnel : évite aussi de perdre tes combats archivés !
+
+        // 2.charge la configuration par défaut de l'application
         self.config = AppConfig::default(); // Charge les réglages par défaut
+
+        // 3. réinjecte les données sauvegardées juste avant
+        self.config.log_path = saved_log_path;
+        self.config.tracked_players = saved_tracked_players;
+        self.config.permanent_archives = saved_archives;
+
+        // 4. Suite logique 
         self.mode = self.config.mode.clone();
         self.players_to_include = self.config.players_to_include;
         self.last_applied_zoom = 0.0; 

@@ -15,7 +15,19 @@ use model::AppState;
 use persistence::load_config;
 
 fn main() {
-    let config = load_config();
+    // 1. On charge la configuration de manière modifiable (mut)
+    let mut config = load_config();
+    
+    // 2. Si le booléen de redémarrage est à true, cela signifie qu'on vient de redémarrer 
+    // sur la NOUVELLE VERSION. On nettoie tout et on sauvegarde.
+    if config.maj_prete_pour_redemarrage {
+        config.maj_prete_pour_redemarrage = false;
+        config.maj_disponible = false;
+        config.statut_maj = "À jour".to_string();
+        persistence::save_config(&config); // Sauvegarde immédiate dans le JSON
+    }
+
+    // 3. On crée l'état partagé avec notre configuration nettoyée
     let state = Arc::new(Mutex::new(AppState::new(config.clone())));
     let state_thread = Arc::clone(&state);
 
@@ -264,7 +276,7 @@ fn verifier_et_mettre_a_jour() -> Result<self_update::Status, Box<dyn std::error
     let status = self_update::backends::github::Update::configure()
         .repo_owner("Bilbaukai-01")             // Ton nom GitHub
         .repo_name("Wakfu-Calculateur-de-d-gats") // Le nom de ton dépôt
-        .bin_name("wakfu_calculateur")          // Le nom de ton binaire
+        .bin_name("Wakfu_calculateur")          // Le nom de ton binaire
         .show_download_progress(true)
         .current_version(env!("CARGO_PKG_VERSION")) // Lit la version de ton Cargo.toml
         .build()?
