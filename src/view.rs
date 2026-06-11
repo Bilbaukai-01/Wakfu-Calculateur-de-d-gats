@@ -556,6 +556,9 @@ impl eframe::App for MyApp {
 
                         ui.vertical(|ui| {
                             ui.group(|ui| {
+                                ui.heading("🔧 Configuration");
+                                ui.add_space(10.0);
+
                                 ui.heading("📁 Fichier de Log");
 
                                 // Ligne 1 : Barre de texte + bouton parcourir
@@ -584,135 +587,144 @@ impl eframe::App for MyApp {
                                 ui.add_space(15.0);
                                 ui.heading("👥 Personnages suivis");
                                 let mut to_remove = None;
-                let mut to_swap = None; // Déclaré ICI pour être accessible
-                let players_count = s.config.tracked_players.len();
+                                let mut to_swap = None; // Déclaré ICI pour être accessible
+                                let players_count = s.config.tracked_players.len();
 
-                ui.vertical(|ui| {
-                    for i in 0..players_count {
-                        ui.horizontal(|ui| {
-                            // Champ de texte pour le nom
-                            ui.text_edit_singleline(&mut s.config.tracked_players[i]);
+                                ui.vertical(|ui| {
+                                    for i in 0..players_count {
+                                        ui.horizontal(|ui| {
+                                            // Champ de texte pour le nom
+                                            ui.text_edit_singleline(&mut s.config.tracked_players[i]);
 
-                            // Bouton Monter
-                            let btn_up = egui::Button::image(egui::include_image!("../arrow_up.png"))
-                                .rounding(3.0);
-                            if ui.add_enabled(i > 0, btn_up).on_hover_text("Monter").clicked() {
-                                to_swap = Some((i, i - 1));
-                            }
+                                            // Bouton Monter
+                                            let btn_up = egui::Button::image(egui::include_image!("../arrow_up.png"))
+                                                .rounding(3.0);
+                                            if ui.add_enabled(i > 0, btn_up).on_hover_text("Monter").clicked() {
+                                                to_swap = Some((i, i - 1));
+                                            }
 
-                            // Bouton Descendre
-                            let btn_down = egui::Button::image(egui::include_image!("../arrow_down.png"))
-                                .rounding(3.0);
-                            if ui.add_enabled(i < players_count - 1, btn_down).on_hover_text("Descendre").clicked() {
-                                to_swap = Some((i, i + 1));
-                            }
+                                            // Bouton Descendre
+                                            let btn_down = egui::Button::image(egui::include_image!("../arrow_down.png"))
+                                                .rounding(3.0);
+                                            if ui.add_enabled(i < players_count - 1, btn_down).on_hover_text("Descendre").clicked() {
+                                                to_swap = Some((i, i + 1));
+                                            }
 
-                            // Bouton Supprimer
-                            if ui.button("❌").clicked() {
-                                to_remove = Some(i);
-                            }
-                        });
-                    }
+                                            // Bouton Supprimer
+                                            if ui.button("❌").clicked() {
+                                                to_remove = Some(i);
+                                            }
+                                        });
+                                    }
 
-                    // Application des changements après la boucle
-                    if let Some((i, j)) = to_swap {
-                        s.config.tracked_players.swap(i, j);
-                        crate::persistence::save_config(&s.config);
-                    }
-                    if let Some(i) = to_remove {
-                        s.config.tracked_players.remove(i);
-                        crate::persistence::save_config(&s.config);
-                    }
+                                    // Application des changements après la boucle
+                                    if let Some((i, j)) = to_swap {
+                                        s.config.tracked_players.swap(i, j);
+                                        crate::persistence::save_config(&s.config);
+                                    }
+                                    if let Some(i) = to_remove {
+                                        s.config.tracked_players.remove(i);
+                                        crate::persistence::save_config(&s.config);
+                                    }
 
-                    ui.add_space(5.0);
-                    if ui.button("➕ Ajouter un personnage").clicked() {
-                        s.config.tracked_players.push("Nouveau".to_string());
-                        crate::persistence::save_config(&s.config);
-                    }
-                });
+                                    ui.add_space(5.0);
+                                    if ui.button("➕ Ajouter un personnage").clicked() {
+                                        s.config.tracked_players.push("Nouveau".to_string());
+                                        crate::persistence::save_config(&s.config);
+                                    }
+                                });
+                            }); // <--- FERMETURE DU GROUP "Configuration"
 
-                                ui.add_space(15.0);
-                ui.horizontal(|ui| {
-                    ui.label("🔍 Zoom UI :");
+                            ui.add_space(15.0); // Espace physique entre les deux blocs
+                        // On commence le grand bloc "Interface"
+                            ui.group(|ui| {
+                                ui.heading("🖥 Interface");
+                                ui.add_space(10.0);
 
-                    // Bouton Moins
-                    if ui.button("➖").clicked() {
-                        s.config.zoom_factor = (s.config.zoom_factor - 0.1).max(0.5);
-                        crate::persistence::save_config(&s.config);
-                    }
+                                // --- ZOOM UI (Placé au tout début du bloc Interface) ---
+                                ui.horizontal(|ui| {
+                                    ui.label("🔍 Zoom UI :");
 
-                    // Champ numérique (cliquable pour taper au clavier)
-                    let res = ui.add(
-                        egui::DragValue::new(&mut s.config.zoom_factor)
-                            .clamp_range(0.5..=2.0) // Correction ici : clamp_range au lieu de range
-                            .speed(0.01)
-                            .fixed_decimals(2)
-                            .suffix("x")
-                    );
-                    
-                    if res.changed() {
-                        crate::persistence::save_config(&s.config);
-                    }
+                                    // Bouton Moins
+                                    if ui.button("➖").clicked() {
+                                        s.config.zoom_factor = (s.config.zoom_factor - 0.1).max(0.5);
+                                        crate::persistence::save_config(&s.config);
+                                    }
 
-                    // Bouton Plus
-                    if ui.button("➕").clicked() {
-                        s.config.zoom_factor = (s.config.zoom_factor + 0.1).min(2.0);
-                        crate::persistence::save_config(&s.config);
-                    }
-                });
+                                    // Champ numérique (cliquable pour taper au clavier)
+                                    let res = ui.add(
+                                        egui::DragValue::new(&mut s.config.zoom_factor)
+                                            .clamp_range(0.5..=2.0)
+                                            .speed(0.01)
+                                            .fixed_decimals(2)
+                                            .suffix("x")
+                                    );
 
-                // =================== OPACITÉ (AJOUT) ===================
-                ui.add_space(10.0);
-                ui.horizontal(|ui| {
-                    ui.label("Opacité : ");
-                    let mut opacity_percentage = (s.config.opacity * 100.0) as i32;
-                    let res = ui.add(
-                        egui::Slider::new(&mut opacity_percentage, 00..=100)
-                            .suffix("%")
-                    );
-                    if res.changed() {
-                        s.config.opacity = (opacity_percentage as f32) / 100.0;
-                        crate::persistence::save_config(&s.config);
-                        ui.ctx().request_repaint(); // <--- AJOUTE CETTE LIGNE
-                    }
-                });
+                                    if res.changed() {
+                                        crate::persistence::save_config(&s.config);
+                                    }
 
-                //==================== CHOIX COULEUR =====================
-                // ==================== DEBUT DE L'AJOUT ====================
-                            ui.horizontal(|ui| {
-                                ui.label("Couleur des textes :");
-                                
-                                // On crée un Color32 temporaire à partir de notre config RGB [u8; 3]
-                                let mut color_tmp = egui::Color32::from_rgb(
-                                    s.config.text_color[0],
-                                    s.config.text_color[1],
-                                    s.config.text_color[2],
-                                );
-                                
-                                // On affiche le bouton d'édition de couleur.
-                                // S'il change, on met à jour la configuration et on l'enregistre en JSON.
-                                if ui.color_edit_button_srgba(&mut color_tmp).changed() {
-                                    s.config.text_color = [color_tmp.r(), color_tmp.g(), color_tmp.b()];
-                                    crate::persistence::save_config(&s.config);
+                                    // Bouton Plus
+                                    if ui.button("➕").clicked() {
+                                        s.config.zoom_factor = (s.config.zoom_factor + 0.1).min(2.0);
+                                        crate::persistence::save_config(&s.config);
+                                    }
+                                });
+
+                                // =================== OPACITÉ ===================
+                                ui.add_space(10.0);
+                                ui.horizontal(|ui| {
+                                    ui.label("Opacité : ");
+                                    let mut opacity_percentage = (s.config.opacity * 100.0) as i32;
+                                    let res = ui.add(
+                                        egui::Slider::new(&mut opacity_percentage, 0..=100)
+                                            .suffix("%")
+                                    );
+                                    if res.changed() {
+                                        s.config.opacity = (opacity_percentage as f32) / 100.0;
+                                        crate::persistence::save_config(&s.config);
+                                        ui.ctx().request_repaint();
+                                    }
+                                });
+
+                                // ==================== CHOIX COULEUR =====================
+                                ui.add_space(10.0);
+                                ui.horizontal(|ui| {
+                                    ui.label("Couleur des textes :");
+
+                                    // On crée un Color32 temporaire à partir de notre config RGB [u8; 3]
+                                    let mut color_tmp = egui::Color32::from_rgb(
+                                        s.config.text_color[0],
+                                        s.config.text_color[1],
+                                        s.config.text_color[2],
+                                    );
+
+                                    // On affiche le bouton d'édition de couleur.
+                                    // S'il change, on met à jour la configuration et on l'enregistre en JSON.
+                                    if ui.color_edit_button_srgba(&mut color_tmp).changed() {
+                                        s.config.text_color = [color_tmp.r(), color_tmp.g(), color_tmp.b()];
+                                        crate::persistence::save_config(&s.config);
+                                    }
+                                });
+
+                                // =================== OVERLAY ===================
+                                ui.add_space(10.0); // Petit espace avant l'overlay
+                                ui.horizontal(|ui| {
+                                    toggle_ui(ui, &mut s.config.always_on_top);
+                                    ui.label("Overlay");
+                                });
+
+                                // =================== PARAMÈTRES PAR DÉFAUT ===================
+                                ui.add_space(20.0);
+
+                                let reset_btn = egui::Button::new(
+                                    egui::RichText::new("⚙ Paramètres par défaut")
+                                ).min_size(egui::vec2(120.0, 30.0));
+
+                                if ui.add(reset_btn).on_hover_text("Réinitialise l'application aux réglages d'origine").clicked() {
+                                    s.reset_to_defaults();
                                 }
-                            });
-// =================== OVERLAY ===================
-                ui.add_space(10.0); // Petit espace avant l'overlay
-                ui.horizontal(|ui| {
-                    toggle_ui(ui, &mut s.config.always_on_top);
-                    ui.label("Overlay");
-                });
-// =================== parametres par default ===================
-                ui.add_space(20.0);
-
-                let reset_btn = egui::Button::new(
-                    egui::RichText::new("⚙ Paramètres par défaut")
-                ).min_size(egui::vec2(120.0, 30.0));
-
-                if ui.add(reset_btn).on_hover_text("Réinitialise l'application aux réglages d'origine").clicked() {
-                    s.reset_to_defaults();
-                }
-                            });
+                            }); // <--- FERMETURE DU GROUP "Interface"
                                                                // --- SECTION MISE À JOUR ---
                                 ui.add_space(15.0);
                                 ui.separator();
