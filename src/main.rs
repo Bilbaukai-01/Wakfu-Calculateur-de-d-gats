@@ -261,6 +261,7 @@ fn main() {
             .with_min_inner_size([60.0, 60.0])
             .with_title("Wakfu calculateur")
             .with_icon(persistence::get_embedded_window_icon())
+            .with_transparent(true)
             .with_resizable(true),
         ..Default::default()
     };

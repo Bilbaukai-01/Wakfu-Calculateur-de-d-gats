@@ -41,6 +41,7 @@ pub enum Tab { Stats, Combats, Archivage, Settings }
 pub struct AppConfig {
     pub log_path: String,
     pub zoom_factor: f32,
+    pub opacity: f32,
     pub always_on_top: bool,
     pub tracked_players: Vec<String>,
     pub window_width: f32,
@@ -49,6 +50,7 @@ pub struct AppConfig {
     pub players_to_include: i32,
     pub permanent_archives: Vec<CombatArchive>,
     pub combat_counter: i32,
+    pub text_color: [u8; 3], 
     #[serde(skip)]
     pub statut_maj: String,
     #[serde(skip)]
@@ -69,7 +71,8 @@ impl Default for AppConfig {
             players_to_include: 1,
             permanent_archives: Vec::new(),
             combat_counter: 1,
-
+            opacity: 0.8,
+            text_color: [200, 200, 200],
             statut_maj: "Recherche de mise à jour...".to_string(),
             maj_disponible: false,
             maj_prete_pour_redemarrage: false,

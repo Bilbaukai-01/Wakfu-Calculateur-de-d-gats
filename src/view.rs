@@ -51,6 +51,12 @@ pub struct MyApp {
 }
 
 impl eframe::App for MyApp {
+
+     // FORCAGE DU FOND TRANSPARENT
+    fn clear_color(&self, _visuals: &egui::Visuals) -> [f32; 4] {
+        egui::Rgba::TRANSPARENT.to_array() // [0.0, 0.0, 0.0, 0.0]
+    }
+
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui_extras::install_image_loaders(ctx); 
         ctx.request_repaint_after(std::time::Duration::from_millis(200));
@@ -104,20 +110,40 @@ impl eframe::App for MyApp {
         let img_reduce = egui::include_image!("../reduction_window.png");
 
         let mut visuals = egui::Visuals::dark();
+        
+        // On récupère la couleur depuis la config de l'utilisateur
+        let r = s.config.text_color[0];
+        let g = s.config.text_color[1];
+        let b = s.config.text_color[2];
+        let ma_couleur_globale = egui::Color32::from_rgb(r, g, b); 
+
+        // On applique cette couleur partout sur les textes par défaut
+        visuals.override_text_color = Some(ma_couleur_globale);
+
+        // On l'applique aussi aux flèches, cases à cocher et sliders
+        visuals.widgets.noninteractive.fg_stroke.color = ma_couleur_globale;
+        visuals.widgets.inactive.fg_stroke.color = ma_couleur_globale;
+        visuals.widgets.hovered.fg_stroke.color = egui::Color32::WHITE; // Blanc au survol
+        visuals.widgets.active.fg_stroke.color = egui::Color32::WHITE;
+        
         visuals.panel_fill = egui::Color32::TRANSPARENT; 
         ctx.set_visuals(visuals);
 
-        egui::CentralPanel::default().frame(egui::Frame::none()).show(ctx, |ui| {
+                egui::CentralPanel::default().frame(egui::Frame::none()).show(ctx, |ui| {
             let rect = ui.max_rect();
             let mut mesh = egui::Mesh::default();
-            let color_top = egui::Color32::BLACK;
-            let color_bottom = egui::Color32::from_rgb(79, 0, 111);
+            
+            // On applique l'opacité utilisateur (s.config.opacity) aux deux couleurs du dégradé de fond !
+            let color_top = egui::Color32::BLACK.linear_multiply(s.config.opacity);
+            let color_bottom = egui::Color32::from_rgb(79, 0, 111).linear_multiply(s.config.opacity);
+            
             mesh.vertices.push(egui::epaint::Vertex { pos: rect.left_top(), uv: egui::Pos2::ZERO, color: color_top });
             mesh.vertices.push(egui::epaint::Vertex { pos: rect.right_top(), uv: egui::Pos2::ZERO, color: color_top });
             mesh.vertices.push(egui::epaint::Vertex { pos: rect.right_bottom(), uv: egui::Pos2::ZERO, color: color_bottom });
             mesh.vertices.push(egui::epaint::Vertex { pos: rect.left_bottom(), uv: egui::Pos2::ZERO, color: color_bottom });
             mesh.indices.extend([0, 1, 2, 0, 2, 3]);
             ui.painter().add(egui::Shape::mesh(mesh));
+
 
             ui.add_space(5.0);
             if s.is_compact {
@@ -155,7 +181,13 @@ impl eframe::App for MyApp {
 
             ui.separator();
 
+            egui::ScrollArea::vertical()
+                .id_source("main_scroll_area")
+                .auto_shrink([false; 2]) // Empêche des comportements de redimensionnement bizarres
+                .show(ui, |ui| {
+
             match s.current_tab {
+
                 Tab::Stats => {
                     ui.horizontal(|ui| {
                         ui.add_space(10.0);
@@ -181,30 +213,31 @@ impl eframe::App for MyApp {
                         });
                     });
 
-                ui.horizontal(|ui| {
-    ui.add_space(10.0); // <--- L'espace AVANT le rectangle (à l'extérieur)
-    
-    ui.group(|ui| {
-        ui.horizontal(|ui| {
-            ui.label("👥 Joueurs :");
-            let range = if s.mode == "multi" { 2..=6 } else { 1..=6 };
-            for i in range {
-                if ui.selectable_label(s.players_to_include == i, i.to_string()).clicked() {
-                    s.players_to_include = i; s.full_reset(); s.has_started = true;
-                    crate::persistence::save_config(&s.config); // On sauvegarde
-                }
-            }
-        });
-    });
-});
+                        ui.horizontal(|ui| {
+                                        ui.add_space(10.0); // <--- L'espace AVANT le rectangle (à l'extérieur)
+                                        
+                                        ui.group(|ui| {
+                                            ui.horizontal(|ui| {
+                                                ui.label("👥 Joueurs :");
+                                                let range = if s.mode == "multi" { 2..=6 } else { 1..=6 };
+                                                for i in range {
+                                                    if ui.selectable_label(s.players_to_include == i, i.to_string()).clicked() {
+                                                        s.players_to_include = i; s.full_reset(); s.has_started = true;
+                                                        crate::persistence::save_config(&s.config); // On sauvegarde
+                                                    }
+                                                }
+                                            });
+                                        });
+                                    });
 
-                    ui.horizontal(|ui| {
-                        ui.add_space(10.0);
-                        toggle_ui(ui, &mut s.showing_history);
-                        ui.label("Afficher l'historique");
-                    });
+                                    ui.horizontal(|ui| {
+                                        ui.add_space(10.0);
+                                        toggle_ui(ui, &mut s.showing_history);
+                                        ui.label("Afficher l'historique");
+                                    });
 
-                    if s.showing_history {
+                                    if s.showing_history {
+
     egui::ScrollArea::vertical().id_source("history_scroll").show(ui, |ui| {
         let mut sorted_players: Vec<_> = s.history.keys().cloned().collect();
         sorted_players.sort_by(|a, b| s.total_damage.get(b).unwrap_or(&0).cmp(s.total_damage.get(a).unwrap_or(&0)));
@@ -627,6 +660,42 @@ impl eframe::App for MyApp {
                         crate::persistence::save_config(&s.config);
                     }
                 });
+
+                // =================== OPACITÉ (AJOUT) ===================
+                ui.add_space(10.0);
+                ui.horizontal(|ui| {
+                    ui.label("Opacité : ");
+                    let mut opacity_percentage = (s.config.opacity * 100.0) as i32;
+                    let res = ui.add(
+                        egui::Slider::new(&mut opacity_percentage, 00..=100)
+                            .suffix("%")
+                    );
+                    if res.changed() {
+                        s.config.opacity = (opacity_percentage as f32) / 100.0;
+                        crate::persistence::save_config(&s.config);
+                        ui.ctx().request_repaint(); // <--- AJOUTE CETTE LIGNE
+                    }
+                });
+
+                //==================== CHOIX COULEUR =====================
+                // ==================== DEBUT DE L'AJOUT ====================
+                            ui.horizontal(|ui| {
+                                ui.label("Couleur des textes :");
+                                
+                                // On crée un Color32 temporaire à partir de notre config RGB [u8; 3]
+                                let mut color_tmp = egui::Color32::from_rgb(
+                                    s.config.text_color[0],
+                                    s.config.text_color[1],
+                                    s.config.text_color[2],
+                                );
+                                
+                                // On affiche le bouton d'édition de couleur.
+                                // S'il change, on met à jour la configuration et on l'enregistre en JSON.
+                                if ui.color_edit_button_srgba(&mut color_tmp).changed() {
+                                    s.config.text_color = [color_tmp.r(), color_tmp.g(), color_tmp.b()];
+                                    crate::persistence::save_config(&s.config);
+                                }
+                            });
 // =================== OVERLAY ===================
                 ui.add_space(10.0); // Petit espace avant l'overlay
                 ui.horizontal(|ui| {
@@ -746,6 +815,10 @@ impl eframe::App for MyApp {
                     });
                 }
             }
+            ui.add_space(20.0); 
+         });
+// ================================= FOOTER FIXE ===================================
+
             egui::Area::new(egui::Id::new("footer_fixe"))
                 .anchor(egui::Align2::RIGHT_BOTTOM, egui::vec2(-10.0, -10.0))
                 .show(ctx, |ui| {

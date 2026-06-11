@@ -33,6 +33,11 @@ if %ERRORLEVEL% NEQ 0 (
 
 echo.
 echo =======================================================
-echo  OPERATION REUSSIE ! Fermeture automatique...
+echo  OPERATION REUSSIE !
 echo =======================================================
-:: Pas de pause ici, la fenêtre se ferme directement
+echo.
+echo Tes fichiers sont prets dans "target/release/" :
+echo  [+] L'executable : %EXE_PATH%
+echo  [+] L'archive ZIP  : %ZIP_PATH%
+echo.
+pause

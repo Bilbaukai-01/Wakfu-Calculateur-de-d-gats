@@ -1,19 +1,19 @@
 {
   "log_path": "",
   "zoom_factor": 1.2,
+  "opacity": 0.8,
   "always_on_top": true,
-  "tracked_players": [
-    "Témala-Taydumask",
-    "Soldier-Heal",
-    "Bilbaukok",
-    "Bilbosa",
-    "Tamair-Lachyaine"
-  ],
+  "tracked_players": [],
   "window_width": 500.0,
   "window_height": 650.0,
   "mode": "mono",
   "players_to_include": 1,
   "permanent_archives": [],
   "combat_counter": 1,
+  "text_color": [
+    255,
+    255,
+    255
+  ],
   "maj_prete_pour_redemarrage": false
 }
