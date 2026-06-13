@@ -1,5 +1,5 @@
 use eframe::egui;
-use crate::model::{AppState, Tab, SpellEntry};
+use crate::model::{AppState, Tab};
 use std::collections::HashMap;
 use chrono::Local;
 
@@ -66,10 +66,10 @@ impl eframe::App for MyApp {
             Err(_) => return,
         };
 
-        // --- 1. APPLICATION DU ZOOM ET DU RESET (PRIORITAIRE) ---
-        let applying_change = (s.config.zoom_factor - s.last_applied_zoom).abs() > 0.01;
+        // --- 1. APPLICATION DU ZOOM ET DU RESET (UNIQUEMENT QUAND LE ZOOM CHANGE) ---
+        let zoom_changed = (s.config.zoom_factor - s.last_applied_zoom).abs() > 0.01;
         
-        if applying_change {
+        if zoom_changed {
             // Applique le zoom
             ctx.set_zoom_factor(s.config.zoom_factor);
             
@@ -79,28 +79,22 @@ impl eframe::App for MyApp {
             s.last_applied_zoom = s.config.zoom_factor;
         }
 
-        // --- 2. SAUVEGARDE DE LA TAILLE MANUELLE ---
-        // On ne sauvegarde que si on n'est pas en train d'appliquer un Reset/Zoom
-        if !s.is_compact && !applying_change {
+        // --- 2. SAUVEGARDE DE LA TAILLE MANUELLE (SANS FORCER LA TAILLE) ---
+        // On ne sauvegarde que si l'utilisateur a manuellement étiré la fenêtre
+        if !s.is_compact && !zoom_changed {
             let current_size = ctx.input(|i| i.viewport().inner_rect.map(|r| r.size()));
             
             if let Some(size) = current_size {
+                // On vérifie si l'utilisateur a étiré la fenêtre à la souris
+                // Seuil suffisamment élevé pour ignorer les changements dus au DPI lors du changement d'écran
                 if size.x > 250.0 && size.y > 350.0 {
-                    // On vérifie si l'utilisateur a étiré la fenêtre à la souris
-                    if (size.x - s.config.window_width).abs() > 10.0 || (size.y - s.config.window_height).abs() > 10.0 {
+                    if (size.x - s.config.window_width).abs() > 20.0 || (size.y - s.config.window_height).abs() > 20.0 {
                         s.config.window_width = size.x;
                         s.config.window_height = size.y;
                         crate::persistence::save_config(&s.config);
                     }
                 }
             }
-        }
-
-        if (s.config.zoom_factor - s.last_applied_zoom).abs() > 0.01 {
-            // Applique le zoom interne
-            ctx.set_zoom_factor(s.config.zoom_factor);
-            ctx.send_viewport_cmd(egui::ViewportCommand::InnerSize(egui::vec2(s.config.window_width, s.config.window_height)));
-            s.last_applied_zoom = s.config.zoom_factor;
         }
 
         let window_level = if s.config.always_on_top { egui::WindowLevel::AlwaysOnTop } else { egui::WindowLevel::Normal };
@@ -173,6 +167,7 @@ impl eframe::App for MyApp {
             ui.add_space(10.0);
             ui.horizontal(|ui| {
                 ui.add_space(10.0);
+                if ui.selectable_label(s.current_tab == Tab::Aide, "ℹ Aide").clicked() { s.current_tab = Tab::Aide; }
                 if ui.selectable_label(s.current_tab == Tab::Stats, "📊 Stats").clicked() { s.current_tab = Tab::Stats; }
                 if ui.selectable_label(s.current_tab == Tab::Combats, "🕒 Combats").clicked() { s.current_tab = Tab::Combats; }
                 if ui.selectable_label(s.current_tab == Tab::Archivage, "📜 Archivage").clicked() {s.current_tab = Tab::Archivage;}
@@ -187,6 +182,80 @@ impl eframe::App for MyApp {
                 .show(ui, |ui| {
 
             match s.current_tab {
+
+                // ==================================================================
+                // ONGLET : AIDE & TUTO (NOUVEAU)
+                // ==================================================================
+                Tab::Aide => {
+                    // On applique une marge de 10.0 pixels à gauche et à droite pour que le texte ne colle pas aux bords
+                    egui::Frame::none()
+                        .inner_margin(egui::Margin {
+                            left: 10.0,
+                            right: 10.0,
+                            top: 0.0,
+                            bottom: 0.0,
+                        })
+                        .show(ui, |ui| {
+                            ui.vertical(|ui| {
+                                ui.add_space(10.0);
+                                ui.heading("ℹ Comment fonctionne l'application ?");
+                                ui.add_space(10.0);
+
+                                // --- SECTION INTRODUCTION (Sans bloc/groupe physique) ---
+                                ui.label(egui::RichText::new("Bienvenue sur le Calculateur de Dégâts Wakfu par Bilbaukai !").strong());
+                                ui.label(
+                                    "Cet outil analyse en temps réel les fichiers de logs générés par le jeu afin de calculer avec précision les dégâts que vous faites. \
+                                    Que ce soit pour vérifier votre puissance avec votre nouveau build, tester des combos de sorts pour trouver la meilleure configuration \
+                                    ou savoir qui tape le plus fort en combat, les possibilités sont infinies."
+                                );
+                                ui.label("Voici les étapes rapides pour commencer à l'utiliser :");
+                                ui.add_space(15.0);
+
+                                // --- ÉTAPE 1 ---
+                                ui.group(|ui| {
+                                    ui.set_width(ui.available_width());
+                                    ui.label(egui::RichText::new("🚀 Étape 1 : Configuration initiale").strong());
+                                    ui.add_space(5.0);
+                                    ui.label("Allez dans l'onglet ⚙ Réglages pour :");
+                                    
+                                    // Utilisation de r"..." pour que Rust accepte les \ du chemin Windows sans erreur
+                                    ui.label(r"• Spécifier le chemin de votre fichier de log Wakfu. C'est ce lien qui lira vos informations du jeu en direct, absolument indispensable pour fonctionner. Le fichier devrait se trouver à cet endroit : C:\Utilisateurs\Nom de votre ordinateur\AppData\Roaming\zaap\gamesLogs\wakfu\logs");
+                                    
+                                    ui.label("• Ajouter la liste des personnages que vous souhaitez suivre. Vous pouvez ajouter autant de personnages que vous voulez, pas besoin qu'ils soient dans votre groupe, l'application reconnaîtra automatiquement les personnages à suivre.");
+                                    ui.add_space(3.0);
+                                    ui.label(egui::RichText::new("💡 N'oubliez pas d'enregistrer vos réglages !").italics().color(egui::Color32::LIGHT_BLUE));
+                                });
+
+                                ui.add_space(10.0);
+
+                                // --- ÉTAPE 2 ---
+                                ui.group(|ui| {
+                                    ui.set_width(ui.available_width());
+                                    ui.label(egui::RichText::new("📊 Étape 2 : Mode de jeu").strong());
+                                    ui.add_space(5.0);
+                                    ui.label("Dans l'onglet 📊 Stats, choisissez votre mode de jeu :");
+                                    ui.label("• Mono-compte : Analyse les données avec une seule fenêtre du jeu ouverte (de 1 à 6 joueurs).");
+                                    ui.label("• Multi-compte : Analyse les données avec deux fenêtres du jeu ouvertes (de 2 à 6 joueurs).");
+                                });
+
+                                ui.add_space(10.0);
+
+                                // --- ÉTAPE 3 ---
+                                ui.group(|ui| {
+                                    ui.set_width(ui.available_width());
+                                    ui.label(egui::RichText::new("🕒 Étape 3 : Historique & Archivage").strong());
+                                    ui.add_space(5.0);
+                                    ui.label("• Combats : Visualisez vos récents combats mémorisés temporairement.");
+                                    ui.label("• Archivage : Sauvegardez vos combats de manière permanente pour ne jamais les perdre, même quand vous fermez l'application.");
+                                });
+
+                                ui.add_space(15.0);
+                                ui.centered_and_justified(|ui| {
+                                    ui.label(egui::RichText::new("Bon jeu sur Wakfu ! ⚔").strong().size(14.0));
+                                });
+                            });
+                        });
+                }
 
                 Tab::Stats => {
                     ui.horizontal(|ui| {
@@ -696,44 +765,51 @@ impl eframe::App for MyApp {
                                     }
                                 });
 
-                                // Ligne 2 : Bouton enregistrer en dessous
-                                ui.add_space(2.0);
-                                if ui.button("💾 Enregistrer le chemin").clicked() { 
-                                    crate::persistence::save_config(&s.config); 
-                                }
-
                                 ui.add_space(15.0);
                                 ui.heading("👥 Personnages suivis");
+                                
                                 let mut to_remove = None;
-                                let mut to_swap = None; // Déclaré ICI pour être accessible
+                                let mut to_swap = None;
                                 let players_count = s.config.tracked_players.len();
 
                                 ui.vertical(|ui| {
-                                    for i in 0..players_count {
-                                        ui.horizontal(|ui| {
-                                            // Champ de texte pour le nom
-                                            ui.text_edit_singleline(&mut s.config.tracked_players[i]);
+                                    // Utilisation d'un menu déroulant (CollapsingHeader) pour masquer/afficher la gestion des personnages
+                                    egui::CollapsingHeader::new(format!("Gérer les personnages suivis ({})", players_count))
+                                        .default_open(false)
+                                        .show(ui, |ui| {
+                                            ui.add_space(5.0);
+                                            for i in 0..players_count {
+                                                ui.horizontal(|ui| {
+                                                    // Champ de texte pour le nom
+                                                    ui.text_edit_singleline(&mut s.config.tracked_players[i]);
 
-                                            // Bouton Monter
-                                            let btn_up = egui::Button::image(egui::include_image!("../arrow_up.png"))
-                                                .rounding(3.0);
-                                            if ui.add_enabled(i > 0, btn_up).on_hover_text("Monter").clicked() {
-                                                to_swap = Some((i, i - 1));
+                                                    // Bouton Monter
+                                                    let btn_up = egui::Button::image(egui::include_image!("../arrow_up.png"))
+                                                        .rounding(3.0);
+                                                    if ui.add_enabled(i > 0, btn_up).on_hover_text("Monter").clicked() {
+                                                        to_swap = Some((i, i - 1));
+                                                    }
+
+                                                    // Bouton Descendre
+                                                    let btn_down = egui::Button::image(egui::include_image!("../arrow_down.png"))
+                                                        .rounding(3.0);
+                                                    if ui.add_enabled(i < players_count - 1, btn_down).on_hover_text("Descendre").clicked() {
+                                                        to_swap = Some((i, i + 1));
+                                                    }
+
+                                                    // Bouton Supprimer
+                                                    if ui.button("❌").clicked() {
+                                                        to_remove = Some(i);
+                                                    }
+                                                });
                                             }
 
-                                            // Bouton Descendre
-                                            let btn_down = egui::Button::image(egui::include_image!("../arrow_down.png"))
-                                                .rounding(3.0);
-                                            if ui.add_enabled(i < players_count - 1, btn_down).on_hover_text("Descendre").clicked() {
-                                                to_swap = Some((i, i + 1));
-                                            }
-
-                                            // Bouton Supprimer
-                                            if ui.button("❌").clicked() {
-                                                to_remove = Some(i);
+                                            ui.add_space(5.0);
+                                            if ui.button("➕ Ajouter un personnage").clicked() {
+                                                s.config.tracked_players.push("Nouveau".to_string());
+                                                crate::persistence::save_config(&s.config);
                                             }
                                         });
-                                    }
 
                                     // Application des changements après la boucle
                                     if let Some((i, j)) = to_swap {
@@ -744,17 +820,12 @@ impl eframe::App for MyApp {
                                         s.config.tracked_players.remove(i);
                                         crate::persistence::save_config(&s.config);
                                     }
-
-                                    ui.add_space(5.0);
-                                    if ui.button("➕ Ajouter un personnage").clicked() {
-                                        s.config.tracked_players.push("Nouveau".to_string());
-                                        crate::persistence::save_config(&s.config);
-                                    }
                                 });
                             }); // <--- FERMETURE DU GROUP "Configuration"
 
                             ui.add_space(15.0); // Espace physique entre les deux blocs
-                        // On commence le grand bloc "Interface"
+                            
+                            // On commence le grand bloc "Interface"
                             ui.group(|ui| {
                                 ui.heading("🖥 Interface");
                                 ui.add_space(10.0);
@@ -831,10 +902,12 @@ impl eframe::App for MyApp {
                                     toggle_ui(ui, &mut s.config.always_on_top);
                                     ui.label("Overlay");
                                 });
+                            }); // <--- FERMETURE DU GROUP "Interface" (Exclut les boutons ci-dessous)
 
-                                // =================== PARAMÈTRES PAR DÉFAUT ===================
-                                ui.add_space(20.0);
-
+                            // =================== BOUTONS DE BAS DE PAGE (HORS GROUPES) ===================
+                            ui.add_space(15.0);
+                            ui.horizontal(|ui| {
+                                // Bouton Paramètres par défaut
                                 let reset_btn = egui::Button::new(
                                     egui::RichText::new("⚙ Paramètres par défaut")
                                 ).min_size(egui::vec2(120.0, 30.0));
@@ -842,7 +915,19 @@ impl eframe::App for MyApp {
                                 if ui.add(reset_btn).on_hover_text("Réinitialise l'application aux réglages d'origine").clicked() {
                                     s.reset_to_defaults();
                                 }
-                            }); // <--- FERMETURE DU GROUP "Interface"
+
+                                ui.add_space(10.0);
+
+                                // Bouton Enregistrer les paramètres
+                                let save_btn = egui::Button::new(
+                                    egui::RichText::new("💾 Enregistrer les paramètres")
+                                ).min_size(egui::vec2(120.0, 30.0));
+
+                                if ui.add(save_btn).on_hover_text("Sauvegarde immédiatement toute la configuration").clicked() {
+                                    crate::persistence::save_config(&s.config);
+                                }
+                            });
+
                                                                // --- SECTION MISE À JOUR ---
                                 ui.add_space(15.0);
                                 ui.separator();

@@ -6,7 +6,7 @@ use std::time::Instant;
 // DATA STRUCTURES
 // ==================================================================================
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, PartialEq)]
 pub struct SpellEntry {
     pub spell: String,
     pub hits: Vec<i32>,
@@ -15,7 +15,7 @@ pub struct SpellEntry {
     pub is_indirect: bool, 
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, PartialEq)]
 pub struct CombatArchive {
     pub name: String,
     pub players_involved: String, 
@@ -24,7 +24,7 @@ pub struct CombatArchive {
     pub details_history: HashMap<String, Vec<SpellEntry>>, 
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, PartialEq)]
 pub struct BufferEntry {
     #[serde(skip)]
     pub time: Option<Instant>,
@@ -35,9 +35,9 @@ pub struct BufferEntry {
 }
 
 #[derive(Serialize, Deserialize, PartialEq)]
-pub enum Tab { Stats, Combats, Archivage, Settings }
+pub enum Tab { Aide, Stats, Combats, Archivage, Settings }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
 pub struct AppConfig {
     pub log_path: String,
     pub zoom_factor: f32,
@@ -83,7 +83,7 @@ impl Default for AppConfig {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, PartialEq)]
 pub struct AppState {
     pub total_damage: HashMap<String, i32>,
     pub history: HashMap<String, Vec<SpellEntry>>,
