@@ -4,12 +4,20 @@ mod model;
 mod persistence;
 mod parser;
 mod view;
+mod invocations;
+mod degats_directs;
+mod degats_indirects;
+mod degats_invocations;
+
+
+
 
 use std::fs::File;
 use std::io::{BufRead, BufReader, Seek, SeekFrom};
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
+
 
 use model::AppState;
 use persistence::load_config;
@@ -96,54 +104,81 @@ fn main() {
                                     }
                                 }
                             
-
-                                // 2. DÉTECTION ACTION "INVOQUE"
+                                                                // ==================================================================================
+                                                                // ==================================================================================
+                                // 2. DÉTECTION DE L'ACTION "INVOQUE" (INVOCATIONS)
+                                // ==================================================================================
                                 else if let Some(cap) = re_summon.captures(&clean) {
-                                    let summoner = cap.get(1).map(|m| m.as_str().trim().to_string()).unwrap_or_default();
-                                    if tracked_players.contains(&summoner) {
-                                        s.pending_summoner = Some(summoner.clone()); // <-- Ajoute .clone() ici
-                                        s.active_summoners.insert(summoner); // <-- Plus d'erreur de move !
+                                    let invocateur = cap.get(1).map(|m| m.as_str().trim().to_string()).unwrap_or_default();
+
+                                    if tracked_players.contains(&invocateur) {
+                                        // Cas A : Détection spécifique de l'Osamodas
+                                        if clean.contains("Invoque une créature du Gobgob") {
+                                            s.pending_summon_owner = Some(invocateur);
+                                        } 
+                                        // Cas B : Invocation traditionnelle
+                                        else {
+                                            // La ligne ressemble à : "Soldier-Blood: Invoque un(e) La Goulue"
+                                            let invocation_raw = clean.split("Invoque").nth(1).unwrap_or("").trim();
+
+                                            // Nettoyage complet des articles pour récupérer le nom propre exact
+                                            let invocation = invocation_raw
+                                                .replace("un(e)", "")
+                                                .replace("un", "")
+                                                .replace("une", "")
+                                                .trim()
+                                                .to_string();
+
+                                            // Sécurité : évite d'enregistrer "une créature du Gobgob" si la chaîne s'est faufilée ici
+                                            if !invocation.is_empty() && !invocation.to_lowercase().contains("créature du gobgob") {
+                                                s.summon_to_owner.insert(invocation, invocateur);
+                                            }
+                                        }
                                     }
                                 }
+
+                                // ==================================================================================
                                 // 3. CHANGEMENT DE TOUR
+                                // ==================================================================================
                                 else if re_turn.is_match(&clean) {
-                                    // On envoie le signal "TURN" à process_action pour le filtrer si on est en mode multi
                                     s.process_action("System".to_string(), 0, "TURN".to_string(), None);
+                                    // ICI : Dès que le log du tour est détecté, on nettoie le temps réel !
+                                                s.current_hits.clear();
+                                                s.current_caster = None;
+                                                s.current_spell = None;
 
-                                    // Ta logique d'attribution des fenêtres d'invocation reste 100% INCHANGÉE :
-                                    if let Some(ref caster) = s.current_caster {
-                                        if s.active_summoners.contains(caster) {
-                                            s.summon_window_owner = Some(caster.clone());
-                                        } else {
-                                            s.summon_window_owner = None; // Un non-invocateur finit son tour -> on ferme la fenêtre
-                                        }
-                                    } else {
-                                        // Si pas de caster identifié mais qu'on avait un pending_summoner à ce tour
-                                        if let Some(pending) = s.pending_summoner.take() {
-                                            s.summon_window_owner = Some(pending);
-                                        }
-                                    }
                                 }
 
-
-
-                                // 4. LANCEMENT DE SORT
+                                // ==================================================================================
+                                // 4. LANCEMENT DE SORT (JOUEURS ET INVOCATIONS)
+                                // ==================================================================================
                                 else if let Some(cap) = re_cast.captures(&clean) {
                                     s.push_current_spell_to_history(&tracked_players);
                                     let c = cap.get(1).map(|m| m.as_str().trim().to_string()).unwrap_or_default();
                                     let sp = cap.get(2).map(|m| m.as_str().trim().to_string()).unwrap_or_default();
-                                    
-                                    if tracked_players.contains(&c) {
+
+                                    // --- OSAMODAS : On associe le nom de la créature de la liste au joueur en attente ---
+                                    if let Some(owner) = s.pending_summon_owner.clone() {
+                                        if crate::invocations::OSAMODAS_SUMMONS.contains(&c.as_str()) {
+                                            s.summon_to_owner.insert(c.clone(), owner);
+                                            s.pending_summon_owner = None; // Fin de l'attente
+                                        }
+                                    }
+
+                                    // On accepte le lanceur si c'est un joueur suivi OU une invocation enregistrée (normale ou Osamodas identifiée)
+                                    if tracked_players.contains(&c) || s.summon_to_owner.contains_key(&c) {
                                         s.current_caster = Some(c);
                                         s.current_spell = Some(sp);
-                                        s.summon_window_owner = None; // Un joueur joue, on ferme la fenêtre d'invoc
                                     } else {
-                                        // Si c'est un monstre ou une invocation qui lance un sort
                                         s.current_caster = None;
                                         s.current_spell = None;
                                     }
-                                } 
-                                // 5. APPLICATION D'ÉTAT (INDIRECT)
+                                }
+
+
+                                // ==================================================================================
+                                // 5. APPLICATION D'ÉTAT (DÉGÂTS INDIRECTS FUTURS)
+                                // ==================================================================================
                                 else if let Some(cap) = re_state_apply.captures(&clean) {
                                     let target = cap.get(1).map(|m| m.as_str().trim()).unwrap_or("");
                                     let state_name = cap.get(2).map(|m| m.as_str().trim()).unwrap_or("");
@@ -154,24 +189,47 @@ fn main() {
                                         }
                                     }
                                 } 
-                                // 6. GESTION DES DÉGÂTS (PV)
+
+                                // ==================================================================================
+                                // 6. GESTION DU CALCUL DES DÉGÂTS (PV PERDUS)
+                                // ==================================================================================
                                 else if clean.contains("PV") {
                                     let target = clean.split(':').next().unwrap_or("").trim();
                                     if !tracked_players.contains(&target.to_string()) {
-                                        let mut found_indirect = false;
+                                        let mut found_damage_processed = false;
                                         let cur_t = s.current_turn;
 
-                                        // --- A. DÉGÂTS INDIRECTS (PRIORITÉ 1) ---
-                                        if let Some(cap) = re_dmg_with_state.captures(&clean) {
-                                            let val = cap.get(2).map(|m| m.as_str().replace(' ', "").parse::<i32>().unwrap_or(0).abs()).unwrap_or(0);
-                                            let state_ref = cap.get(3).map(|m| m.as_str().trim().to_lowercase()).unwrap_or_default();
-                                            if let Some((orig_name, caster_name, _)) = s.state_to_caster.get(&state_ref).cloned() {
-                                                if let Some(entry) = s.state_to_caster.get_mut(&state_ref) { entry.2 = cur_t; }
-                                                s.process_action(caster_name, val, "INDIRECT".to_string(), Some(orig_name));
-                                                found_indirect = true;
+                                        // --- PRIORITÉ A : DÉGÂTS DIRECTS D'INVOCATION (Nouveau !) ---
+                                        // On vérifie en tout premier si les dégâts proviennent d'un sort direct d'invocation.
+                                        // Cela évite que des indicateurs comme "(Hydratée)" soient confondus avec un poison indirect.
+                                        if let Some(caster) = s.current_caster.clone() {
+                                            if let Some(owner) = s.summon_to_owner.get(&caster).cloned() {
+                                                if let Some(cap) = re_dmg.captures(&clean) {
+                                                    let val = cap.get(1).map(|m| m.as_str().replace(' ', "").parse::<i32>().unwrap_or(0).abs()).unwrap_or(0);
+                                                    let spell_temp = s.current_spell.clone();
+                                                    
+                                                    // On attribue les dégâts directs au propriétaire de l'invocation sous la forme "SUMMON"
+                                                    s.process_action(owner, val, "SUMMON".to_string(), spell_temp);
+                                                    found_damage_processed = true;
+                                                }
                                             }
                                         }
-                                        if !found_indirect {
+
+                                        // --- PRIORITÉ B : DÉGÂTS INDIRECTS (EFFETS ET POISONS) ---
+                                        if !found_damage_processed {
+                                            if let Some(cap) = re_dmg_with_state.captures(&clean) {
+                                                let val = cap.get(2).map(|m| m.as_str().replace(' ', "").parse::<i32>().unwrap_or(0).abs()).unwrap_or(0);
+                                                let state_ref = cap.get(3).map(|m| m.as_str().trim().to_lowercase()).unwrap_or_default();
+                                                if let Some((orig_name, caster_name, _)) = s.state_to_caster.get(&state_ref).cloned() {
+                                                    if let Some(entry) = s.state_to_caster.get_mut(&state_ref) { entry.2 = cur_t; }
+
+                                                    s.process_action(caster_name, val, "INDIRECT".to_string(), Some(orig_name));
+                                                    found_damage_processed = true;
+                                                }
+                                            }
+                                        }
+
+                                        if !found_damage_processed {
                                             let mut matched_state = None;
                                             for (key, (orig, caster, _)) in &s.state_to_caster {
                                                 if clean.to_lowercase().contains(key) {
@@ -185,23 +243,20 @@ fn main() {
                                             if let Some((key, orig, caster, val)) = matched_state {
                                                 s.process_action(caster, val, "INDIRECT".to_string(), Some(orig));
                                                 if let Some(entry) = s.state_to_caster.get_mut(&key) { entry.2 = cur_t; }
-                                                found_indirect = true;
+                                                found_damage_processed = true;
                                             }
                                         }
 
-                                        // --- B. DÉGÂTS DIRECTS OU INVOCATION (PRIORITÉ 2) ---
-                                        if !found_indirect {
+                                        // --- PRIORITÉ C : DÉGÂTS DIRECTS STANDARD DU JOUEUR ---
+                                        if !found_damage_processed {
                                             if let Some(cap) = re_dmg.captures(&clean) {
                                                 let val = cap.get(1).map(|m| m.as_str().replace(' ', "").parse::<i32>().unwrap_or(0).abs()).unwrap_or(0);
-                                                
+
                                                 if let Some(caster) = s.current_caster.clone() {
                                                     if tracked_players.contains(&caster) {
                                                         let spell_temp = s.current_spell.clone();
                                                         s.process_action(caster, val, "DMG".to_string(), spell_temp);
                                                     }
-                                                } else if let Some(owner) = s.summon_window_owner.clone() {
-                                                    // Si aucun lanceur suivi, mais qu'une fenêtre d'invocation est ouverte
-                                                    s.process_action(owner, val, "DMG".to_string(), Some("sort de l'invocation".to_string()));
                                                 }
                                             }
                                         }
@@ -216,6 +271,7 @@ fn main() {
             thread::sleep(Duration::from_millis(200));
         }
     });
+
 
 {
         let state_clone = Arc::clone(&state);

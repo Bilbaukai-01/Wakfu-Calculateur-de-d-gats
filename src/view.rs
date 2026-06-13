@@ -213,192 +213,240 @@ impl eframe::App for MyApp {
                         });
                     });
 
-                        ui.horizontal(|ui| {
-                                        ui.add_space(10.0); // <--- L'espace AVANT le rectangle (à l'extérieur)
-                                        
-                                        ui.group(|ui| {
-                                            ui.horizontal(|ui| {
-                                                ui.label("👥 Joueurs :");
-                                                let range = if s.mode == "multi" { 2..=6 } else { 1..=6 };
-                                                for i in range {
-                                                    if ui.selectable_label(s.players_to_include == i, i.to_string()).clicked() {
-                                                        s.players_to_include = i; s.full_reset(); s.has_started = true;
-                                                        crate::persistence::save_config(&s.config); // On sauvegarde
-                                                    }
-                                                }
-                                            });
-                                        });
-                                    });
-
-                                    ui.horizontal(|ui| {
-                                        ui.add_space(10.0);
-                                        toggle_ui(ui, &mut s.showing_history);
-                                        ui.label("Afficher l'historique");
-                                    });
-
-                                    if s.showing_history {
-
-    egui::ScrollArea::vertical().id_source("history_scroll").show(ui, |ui| {
-        let mut sorted_players: Vec<_> = s.history.keys().cloned().collect();
-        sorted_players.sort_by(|a, b| s.total_damage.get(b).unwrap_or(&0).cmp(s.total_damage.get(a).unwrap_or(&0)));
-
-        for player in sorted_players {
-            egui::CollapsingHeader::new(format!("{} (Total: {} PV)", player, s.total_damage.get(&player).unwrap_or(&0)))
-                .default_open(true)
-                .show(ui, |ui| {
-                    if let Some(entries) = s.history.get(&player) {
-                        let mut spell_totals: HashMap<String, (i32, bool)> = HashMap::new();
-                        let mut current_t = -1;
-                        let mut turn_total = 0;
-
-                        for entry in entries {
-                            let entry_key = if entry.is_indirect { format!("{} (indirect)", entry.spell) } else { entry.spell.clone() };
-                            let stat = spell_totals.entry(entry_key).or_insert((0, entry.is_indirect));
-                            stat.0 += entry.total;
-
-                            if entry.turn != current_t {
-                                if current_t != -1 { 
-                                    ui.label(egui::RichText::new(format!("   Total Tour : {} PV", turn_total)).strong().color(egui::Color32::LIGHT_BLUE)); 
-                                }
-                                current_t = entry.turn; 
-                                turn_total = 0;
-                                ui.label(egui::RichText::new(format!("⏳ Tour {}", entry.turn)).underline());
-                            }
-                            
-                            let color = if entry.is_indirect { egui::Color32::from_rgb(170, 100, 250) } else { egui::Color32::WHITE };
-                            let tag = if entry.is_indirect { " (indirect)" } else { "" };
-                            ui.label(egui::RichText::new(format!("   - {}{} : +{} PV {:?}", entry.spell, tag, entry.total, entry.hits)).color(color));
-                            turn_total += entry.total;
-                        }
-                        
-                        // Dernier total de tour pour le joueur
-                        ui.label(egui::RichText::new(format!("   Total Tour : {} PV", turn_total)).strong().color(egui::Color32::LIGHT_BLUE));
-                        
-                        ui.add_space(5.0);
-                        ui.label(egui::RichText::new("📊 Récapitulatif par sort :").italics().color(egui::Color32::GOLD));
-                        
-                        // Tri des sorts pour éviter le clignotement dans l'historique aussi
-                        let mut sorted_spells: Vec<_> = spell_totals.into_iter().collect();
-                        sorted_spells.sort_by(|a, b| b.1.0.cmp(&a.1.0));
-                        
-                        for (spell_name, (total, is_ind)) in sorted_spells {
-                            let color = if is_ind { egui::Color32::from_rgb(170, 100, 250) } else { egui::Color32::WHITE };
-                            ui.label(egui::RichText::new(format!("   Total {} : {} PV", spell_name, total)).color(color));
-                        }
-                        ui.add_space(10.0);
-                    }
-                });
-        }
-    });
-} else {
-    // =================== VUE LIVE (SANS HISTORIQUE) ===================
-    let expected = (s.players_to_include - s.ko_players.len() as i32).max(1);
-    
-    ui.horizontal(|ui| {
-        ui.add_space(10.0);
-        ui.label(format!("⏳ Tour: {}", s.current_turn));
-        ui.separator();
-        ui.label(format!("💀 KO: {}", s.ko_players.len()));
-        ui.label(format!("(Vus: {}/{})", s.tour_reports_seen, expected));
-    });
-    
-    ui.separator();
-
-    ui.horizontal(|ui| {
-        ui.add_space(10.0);
-        ui.vertical(|ui| {
-            ui.label("📊 Statistiques :");
-
-            let mut sorted_players: Vec<_> = s.visible_players.iter().collect();
-            sorted_players.sort_by(|a, b| s.total_damage.get(*b).unwrap_or(&0).cmp(s.total_damage.get(*a).unwrap_or(&0)));
-
-            egui::ScrollArea::vertical().id_source("stats_scroll").show(ui, |ui| {
-                for player in sorted_players {
-                    let dmg = s.total_damage.get(player).unwrap_or(&0);
                     ui.horizontal(|ui| {
-                        ui.label(egui::RichText::new(format!("• {}:", player)).strong());
-                        ui.label(egui::RichText::new(format!("{} PV", dmg)).color(egui::Color32::LIGHT_GREEN));
-                    });
-                }
-            });
-// =================== ENCART : ACTION EN DIRECT ===================
-        ui.add_space(10.0);
-        ui.group(|ui| {
-            ui.set_width(ui.available_width() - 5.0);
-            
-            // 1. On vérifie d'abord s'il y a des dégâts en train de tomber (current_hits)
-            if !s.current_hits.is_empty() {
-                ui.label(egui::RichText::new("⚡ ACTION EN DIRECT").strong().color(egui::Color32::LIGHT_RED));
-                ui.separator();
+                        ui.add_space(10.0); // <--- L'espace AVANT le rectangle (à l'extérieur)
 
-                let caster = s.current_caster.as_deref().unwrap_or("Inconnu");
-                let spell = s.current_spell.as_deref().unwrap_or("Sort...");
-                let total_live: i32 = s.current_hits.iter().sum();
-
-                ui.vertical(|ui| {
-                    ui.label(egui::RichText::new(format!("👤 {}", caster)).strong());
-                    ui.horizontal(|ui| {
-                        ui.label(egui::RichText::new(format!("✨ {}", spell)).color(egui::Color32::WHITE));
-                        ui.label(egui::RichText::new(format!("(x{})", s.current_hits.len())).small().italics());
-                    });
-                    
-                    ui.add_space(5.0);
-                    // Affichage du gros chiffre qui monte en temps réel
-                    ui.label(egui::RichText::new(format!("💥 {} PV", total_live))
-                        .size(26.0)
-                        .strong()
-                        .color(egui::Color32::WHITE));
-
-                    ui.label(egui::RichText::new(format!("{:?}", s.current_hits))
-                        .small()
-                        .color(egui::Color32::GRAY));
-                });
-            } else {
-                // 2. Si aucune action n'est en cours, on affiche la dernière action finie
-                ui.label(egui::RichText::new("⚡Sort en cours:").strong().color(egui::Color32::DARK_GRAY));
-                ui.separator();
-                
-                // --- CORRECTION DU TYPE ICI ---
-                let mut last_entry: Option<&SpellEntry> = None; 
-                // ------------------------------
-
-                for entries in s.history.values() {
-                    if let Some(last) = entries.last() {
-                        if last_entry.is_none() || last.turn >= last_entry.unwrap().turn {
-                            last_entry = Some(last);
-                        }
-                    }
-                }
-
-                if let Some(entry) = last_entry {
-                    ui.label(egui::RichText::new(format!("Dernière action : {} ({} PV)", entry.spell, entry.total))
-                        .small()
-                        .italics()
-                        .color(egui::Color32::GRAY));
-                } else {
-                    ui.label(egui::RichText::new("Aucun dégât détecté").small().italics().color(egui::Color32::GRAY));
-                }
-            }
-        });
-    });
-});
-
-                        ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
-                            ui.add_space(10.0);
-                            ui.group(|ui| {
-                                ui.label(egui::RichText::new("✨ États actifs :").color(egui::Color32::from_rgb(170, 100, 250)).strong());
-                                if s.state_to_caster.is_empty() {
-                                    ui.label(egui::RichText::new("Aucun état").small().italics());
-                                } else {
-                                    for (orig_name, caster, _) in s.state_to_caster.values() {
-                                        ui.label(egui::RichText::new(format!("• {} ({})", orig_name, caster)).small().color(egui::Color32::LIGHT_GRAY));
+                        ui.group(|ui| {
+                            ui.horizontal(|ui| {
+                                ui.label("👥 Joueurs :");
+                                let range = if s.mode == "multi" { 2..=6 } else { 1..=6 };
+                                for i in range {
+                                    if ui.selectable_label(s.players_to_include == i, i.to_string()).clicked() {
+                                        s.players_to_include = i; s.full_reset(); s.has_started = true;
+                                        crate::persistence::save_config(&s.config); // On sauvegarde
                                     }
                                 }
                             });
                         });
-                    }
+                    });
+
+                    ui.horizontal(|ui| {
+                        ui.add_space(10.0);
+                        toggle_ui(ui, &mut s.showing_history);
+                        ui.label("Afficher l'historique");
+
+                        if s.showing_history {
+                            ui.separator();
+                            ui.label("Disposition :");
+                            // Utilisation de boutons radio sélectionnables
+                            if ui.selectable_label(!s.config.history_horizontal, "⬇️ Vertical").clicked() {
+                                s.config.history_horizontal = false;
+                                crate::persistence::save_config(&s.config);
+                            }
+                            if ui.selectable_label(s.config.history_horizontal, "➡️ Horizontal").clicked() {
+                                s.config.history_horizontal = true;
+                                crate::persistence::save_config(&s.config);
+                            }
+                        }
+                    });
+
+                    // On n'affiche la ScrollArea de l'historique QUE si showing_history est actif
+                    if s.showing_history {
+                        // En mode horizontal, on permet le scroll horizontal. En mode vertical, uniquement vertical.
+                        let scroll_area = if s.config.history_horizontal {
+                            egui::ScrollArea::both()
+                        } else {
+                            egui::ScrollArea::vertical()
+                        };
+
+                        scroll_area.id_source("history_scroll").show(ui, |ui| {
+                            let mut sorted_players: Vec<_> = s.history.keys().cloned().collect();
+                            sorted_players.sort_by(|a, b| s.total_damage.get(b).unwrap_or(&0).cmp(s.total_damage.get(a).unwrap_or(&0)));
+
+                            // Extraction locale pour éviter l'erreur de borrow-check (double emprunt de `s`)
+                            let history = &s.history;
+                            let total_damage = &s.total_damage;
+
+                            // Macro/Closure locale pour dessiner un personnage
+                            let render_player = |ui: &mut egui::Ui, player: &String| {
+                                ui.vertical(|ui| {
+                                    ui.group(|ui| {
+                                        egui::CollapsingHeader::new(format!("{} (Total: {} PV)", player, total_damage.get(player).unwrap_or(&0)))
+                                            .default_open(true)
+                                            .show(ui, |ui| {
+                                                if let Some(entries) = history.get(player) {
+                                                    let mut spell_totals: std::collections::HashMap<String, (i32, bool)> = std::collections::HashMap::new();
+                                                    let mut current_t = -1;
+                                                    let mut turn_total = 0;
+
+                                                    for entry in entries {
+                                                        let entry_key = if entry.is_indirect { format!("{} (indirect)", entry.spell) } else { entry.spell.clone() };
+                                                        let stat = spell_totals.entry(entry_key).or_insert((0, entry.is_indirect));
+                                                        stat.0 += entry.total;
+
+                                                        if entry.turn != current_t {
+                                                            if current_t != -1 { 
+                                                                ui.label(egui::RichText::new(format!("   Total Tour : {} PV", turn_total)).strong().color(egui::Color32::LIGHT_BLUE)); 
+                                                            }
+                                                            current_t = entry.turn; 
+                                                            turn_total = 0;
+                                                            ui.label(egui::RichText::new(format!("⏳ Tour {}", entry.turn)).underline());
+                                                        }
+
+                                                        let color = if entry.is_indirect { egui::Color32::from_rgb(170, 100, 250) } else { egui::Color32::WHITE };
+                                                        let tag = if entry.is_indirect { " (indirect)" } else { "" };
+                                                        ui.label(egui::RichText::new(format!("   - {}{} : +{} PV {:?}", entry.spell, tag, entry.total, entry.hits)).color(color));
+                                                        turn_total += entry.total;
+                                                    }
+
+                                                    ui.label(egui::RichText::new(format!("   Total Tour : {} PV", turn_total)).strong().color(egui::Color32::LIGHT_BLUE));
+                                                    ui.add_space(5.0);
+
+                                                    egui::CollapsingHeader::new(
+                                                        egui::RichText::new("📊 Récapitulatif par sort")
+                                                            .italics()
+                                                            .color(egui::Color32::GOLD)
+                                                    )
+                                                    .default_open(false)
+                                                    .show(ui, |ui| {
+                                                        let mut sorted_spells: Vec<_> = spell_totals.into_iter().collect();
+                                                        sorted_spells.sort_by(|a, b| b.1.0.cmp(&a.1.0));
+
+                                                        for (spell_name, (total, is_ind)) in sorted_spells {
+                                                            let color = if is_ind { egui::Color32::from_rgb(170, 100, 250) } else { egui::Color32::WHITE };
+                                                            ui.label(egui::RichText::new(format!("   Total {} : {} PV", spell_name, total)).color(color));
+                                                        }
+                                                    });
+                                                    ui.add_space(10.0);
+                                                }
+                                            });
+                                    });
+                                });
+                            };
+
+                            // On dessine avec la disposition choisie
+                            if s.config.history_horizontal {
+                                ui.horizontal(|ui| {
+                                    for player in sorted_players {
+                                        render_player(ui, &player);
+                                        ui.add_space(15.0);
+                                    }
+                                });
+                            } else {
+                                for player in sorted_players {
+                                    render_player(ui, &player);
+                                    ui.add_space(15.0);
+                                }
+                            }
+                        });
+                    } // Fin de s.showing_history
+
+                // =================== VUE LIVE (SANS HISTORIQUE) ===================
+                let expected = (s.players_to_include - s.ko_players.len() as i32).max(1);
+                
+                ui.horizontal(|ui| {
+                    ui.add_space(10.0);
+                    ui.label(format!("⏳ Tour: {}", s.current_turn));
+                    ui.separator();
+                    ui.label(format!("💀 KO: {}", s.ko_players.len()));
+                    ui.label(format!("(Vus: {}/{})", s.tour_reports_seen, expected));
+                });
+                
+                ui.separator();
+
+                ui.horizontal(|ui| {
+                    ui.add_space(10.0);
+                    ui.vertical(|ui| {
+                        ui.label("📊 Statistiques :");
+
+                        let mut sorted_players: Vec<_> = s.visible_players.iter().collect();
+                        sorted_players.sort_by(|a, b| s.total_damage.get(*b).unwrap_or(&0).cmp(s.total_damage.get(*a).unwrap_or(&0)));
+
+                        egui::ScrollArea::vertical().id_source("stats_scroll").show(ui, |ui| {
+                            for player in sorted_players {
+                                let dmg = s.total_damage.get(player).unwrap_or(&0);
+                                ui.horizontal(|ui| {
+                                    ui.label(egui::RichText::new(format!("• {}:", player)).strong());
+                                    ui.label(egui::RichText::new(format!("{} PV", dmg)).color(egui::Color32::LIGHT_GREEN));
+                                });
+                            }
+                        });
+        // =================== ENCART : ACTION EN DIRECT ===================
+        ui.add_space(10.0);
+        ui.group(|ui| {
+            ui.set_width(ui.available_width() - 5.0);
+
+            // --- 1. RÉCUPÉRATION ET TRI CHRONOLOGIQUE DES ACTIONS ---
+            let mut all_actions = Vec::new();
+            for (player, entries) in s.history.iter() {
+                for entry in entries {
+                    all_actions.push((player.clone(), entry.clone()));
                 }
-                Tab::Combats => {
+            }
+            
+            // On trie les actions par numéro de tour (ou ordre d'apparition)
+            all_actions.sort_by(|a, b| a.1.turn.cmp(&b.1.turn));
+
+            // On extrait les deux dernières actions
+            let latest_action = all_actions.last().cloned();
+            let previous_action = if all_actions.len() >= 2 {
+                all_actions.get(all_actions.len() - 2).cloned()
+            } else {
+                None
+            };
+
+            // --- 2. AFFICHAGE DE L'ACTION EN COURS (La plus récente : "B") ---
+            ui.label(egui::RichText::new("⚡ ACTION EN DIRECT").strong().color(egui::Color32::LIGHT_RED));
+            ui.separator();
+
+            if let Some((caster, entry)) = latest_action {
+                ui.vertical(|ui| {
+                    ui.horizontal(|ui| {
+                        ui.label(egui::RichText::new(&caster).strong().color(egui::Color32::WHITE));
+                        ui.label(egui::RichText::new("lance").color(egui::Color32::GRAY));
+                        // Nom du sort avec la couleur RGB (255, 198, 255)
+                        ui.label(egui::RichText::new(&entry.spell)
+                            .strong()
+                            .color(egui::Color32::from_rgb(255, 221, 107)));
+                    });
+
+                    ui.add_space(5.0);
+                    
+                    // Affichage des dégâts avec la couleur RGB (255, 198, 255)
+                    ui.label(egui::RichText::new(format!("💥 {} PV", entry.total))
+                        .size(26.0)
+                        .strong()
+                        .color(egui::Color32::from_rgb(255, 221, 107)));
+
+                    ui.label(egui::RichText::new(format!("{:?}", entry.hits))
+                        .small()
+                        .color(egui::Color32::GRAY));
+                });
+            } else {
+                ui.label(egui::RichText::new("En attente d'une action...").small().italics().color(egui::Color32::GRAY));
+            }
+
+            ui.add_space(10.0);
+            ui.separator();
+
+            // --- 3. AFFICHAGE DE LA DERNIÈRE ACTION (L'avant-dernière : "A") ---
+            if let Some((prev_caster, prev_entry)) = previous_action {
+                ui.label(egui::RichText::new(format!("Dernière action : {} - {} ({} PV)", prev_caster, prev_entry.spell, prev_entry.total))
+                    .small()
+                    .italics()
+                    .color(egui::Color32::GRAY));
+            } else {
+                ui.label(egui::RichText::new("Aucune action précédente").small().italics().color(egui::Color32::GRAY));
+            }
+        });
+
+    });
+});
+
+
+            } // Fin de Tab::Stats
+
+            Tab::Combats => {
     ui.horizontal(|ui| {
         ui.heading("🕒 Historique de Session");
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
@@ -441,34 +489,104 @@ impl eframe::App for MyApp {
                                 ui.collapsing("Détails des dégâts", |ui| {
                                     for (player, total) in &archive.damages {
                                         ui.collapsing(format!("{}: {} PV", player, total), |ui| {
-                                            if let Some(entries) = archive.details_history.get(player) {
+                                                                                        if let Some(entries) = archive.details_history.get(player) {
+                                                // --- ÉTAPE 1 : CALCUL ET CUMUL DE TOUTES LES DONNÉES ---
                                                 let mut spell_totals: HashMap<String, (i32, bool)> = HashMap::new();
+                                                let mut turns_data: Vec<(i32, Vec<(String, i32, bool)>, i32)> = Vec::new();
+                                                
                                                 let mut current_t = -1;
+                                                let mut turn_spells = Vec::new();
                                                 let mut turn_total = 0;
+
                                                 for entry in entries {
                                                     let entry_key = if entry.is_indirect { format!("{} (indirect)", entry.spell) } else { entry.spell.clone() };
-                                                    let stat = spell_totals.entry(entry_key).or_insert((0, entry.is_indirect));
+                                                    
+                                                    // Cumul pour le récapitulatif global du joueur
+                                                    let stat = spell_totals.entry(entry_key.clone()).or_insert((0, entry.is_indirect));
                                                     stat.0 += entry.total;
 
+                                                    // Structuration par Tour pour le fil chronologique
                                                     if entry.turn != current_t {
-                                                        if current_t != -1 { 
-                                                            ui.label(egui::RichText::new(format!("   Total Tour : {} PV", turn_total)).small().color(egui::Color32::LIGHT_BLUE)); 
+                                                        if current_t != -1 {
+                                                            turns_data.push((current_t, turn_spells, turn_total));
                                                         }
-                                                        current_t = entry.turn; turn_total = 0;
-                                                        ui.label(egui::RichText::new(format!("⏳ Tour {}", entry.turn)).underline());
+                                                        current_t = entry.turn;
+                                                        turn_spells = Vec::new();
+                                                        turn_total = 0;
                                                     }
-                                                    let color = if entry.is_indirect { egui::Color32::from_rgb(170, 100, 250) } else { egui::Color32::WHITE };
-                                                    ui.add(egui::Label::new(egui::RichText::new(format!("   - {} : +{} PV", entry.spell, entry.total)).color(color)).wrap(false));
+                                                    turn_spells.push((entry.spell.clone(), entry.total, entry.is_indirect));
                                                     turn_total += entry.total;
                                                 }
-                                                ui.label(egui::RichText::new(format!("   Total Tour : {} PV", turn_total)).small().color(egui::Color32::LIGHT_BLUE));
+                                                // Ne pas oublier le dernier tour traité
+                                                if current_t != -1 {
+                                                    turns_data.push((current_t, turn_spells, turn_total));
+                                                }
+
+                                                // --- ÉTAPE 2 : AFFICHAGE CHRONOLOGIQUE DES TOURS ---
+                                                for (turn_num, spells, total_p_tour) in turns_data {
+                                                    ui.label(egui::RichText::new(format!("⏳ Tour {}", turn_num)).underline());
+                                                    for (spell_name, val, is_indirect) in spells {
+                                                        let color = if is_indirect { egui::Color32::from_rgb(170, 100, 250) } else { egui::Color32::WHITE };
+                                                        ui.add(egui::Label::new(egui::RichText::new(format!("   - {} : +{} PV", spell_name, val)).color(color)).wrap(false));
+                                                    }
+                                                    ui.label(egui::RichText::new(format!("   Total Tour : {} PV", total_p_tour)).small().color(egui::Color32::LIGHT_BLUE));
+                                                }
+
                                                 ui.add_space(5.0);
                                                 ui.label(egui::RichText::new("📊 Récapitulatif :").italics().color(egui::Color32::GOLD));
-                                                let mut sorted_spells: Vec<_> = spell_totals.into_iter().collect();
-                                                sorted_spells.sort_by(|a, b| b.1.0.cmp(&a.1.0));
-                                                for (name, (sum, is_ind)) in sorted_spells {
-                                                    let color = if is_ind { egui::Color32::from_rgb(170, 100, 250) } else { egui::Color32::WHITE };
-                                                    ui.label(egui::RichText::new(format!("   Total {} : {} PV", name, sum)).color(color));
+
+                                                // --- ÉTAPE 3 : TRI ULTRA-STABLE UNIVERSEL (ZÉRO FLICKERING GARANTI) ---
+                                                        let mut sorted_spells: Vec<_> = spell_totals.into_iter().collect();
+                                                        sorted_spells.sort_by(|a, b| {
+                                                            // 1. Critère majeur : Les dégâts cumulés (décroissant)
+                                                            let cmp_damage = b.1.0.cmp(&a.1.0);
+                                                            if cmp_damage != std::cmp::Ordering::Equal {
+                                                                return cmp_damage;
+                                                            }
+
+                                                            // 2. Critère secondaire : Est-ce indirect ? (On met les directs en premier)
+                                                            let cmp_indirect = a.1.1.cmp(&b.1.1);
+                                                            if cmp_indirect != std::cmp::Ordering::Equal {
+                                                                return cmp_indirect;
+                                                            }
+
+                                                            // 3. Critère tertiaire : Normalisation Unicode & Suppression complète des accents
+                                                            let clean_string = |s: &str| -> String {
+                                                                s.to_lowercase()
+                                                                    .chars()
+                                                                    .map(|c| {
+                                                                        // Remplacement manuel des ligatures courantes et cas spécifiques
+                                                                        match c {
+                                                                            'œ' => "oe".to_string(),
+                                                                            'æ' => "ae".to_string(),
+                                                                            _ => {
+                                                                                // Décomposition de tous les caractères accentués (e.g. 'ï' -> 'i' + '¨')
+                                                                                // On ne conserve que le caractère de base (celui qui est ASCII / alphabétique)
+                                                                                let mut base_char = String::new();
+                                                                                for decomposed in c.to_string().chars() {
+                                                                                    // On ignore les marques de diacritiques (accents) combinatoires
+                                                                                    if !('\u{0300}'..='\u{036F}').contains(&decomposed) {
+                                                                                        base_char.push(decomposed);
+                                                                                    }
+                                                                                }
+                                                                                base_char
+                                                                            }
+                                                                        }
+                                                                    })
+                                                                    .collect::<Vec<String>>()
+                                                                    .join("")
+                                                            };
+
+                                                            let a_clean = clean_string(&a.0);
+                                                            let b_clean = clean_string(&b.0);
+
+                                                            a_clean.cmp(&b_clean)
+                                                        });
+
+                                                // --- ÉTAPE 4 : AFFICHAGE DU RÉCAPITULATIF TRIÉ ---
+                                                for (spell_name, (total, is_indirect)) in sorted_spells {
+                                                    let color = if is_indirect { egui::Color32::from_rgb(170, 100, 250) } else { egui::Color32::LIGHT_GREEN };
+                                                    ui.label(egui::RichText::new(format!("   ⭐ {} : {} PV", spell_name, total)).color(color));
                                                 }
                                             }
                                         });
@@ -828,7 +946,7 @@ impl eframe::App for MyApp {
                 }
             }
             ui.add_space(20.0); 
-         });
+        });
 // ================================= FOOTER FIXE ===================================
 
             egui::Area::new(egui::Id::new("footer_fixe"))

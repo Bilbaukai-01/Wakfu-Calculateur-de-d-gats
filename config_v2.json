@@ -1,19 +1,197 @@
 {
-  "log_path": "",
+  "log_path": "C:\\Users\\Bilbaukai\\AppData\\Roaming\\zaap\\gamesLogs\\wakfu\\logs\\wakfu_chat.log",
   "zoom_factor": 1.2,
-  "opacity": 0.8,
+  "opacity": 1.0,
   "always_on_top": true,
-  "tracked_players": [],
+  "tracked_players": [
+    "Chatte-Enbouchinkouin",
+    "Bilbaukok",
+    "Tamair-Lachyaine"
+  ],
   "window_width": 500.0,
   "window_height": 650.0,
   "mode": "mono",
   "players_to_include": 1,
-  "permanent_archives": [],
-  "combat_counter": 1,
+  "permanent_archives": [
+    {
+      "name": "Combat #1",
+      "players_involved": "Tamair-Lachyaine, Bilbaukok, Chatte-Enbouchinkouin",
+      "total_turns": 2,
+      "damages": [
+        [
+          "Tamair-Lachyaine",
+          17062
+        ],
+        [
+          "Chatte-Enbouchinkouin",
+          8754
+        ],
+        [
+          "Bilbaukok",
+          1038
+        ]
+      ],
+      "details_history": {
+        "Tamair-Lachyaine": [
+          {
+            "spell": "Croc-en-jambe",
+            "hits": [
+              1298,
+              1299
+            ],
+            "total": 2597,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Baroud",
+            "hits": [
+              3000
+            ],
+            "total": 3000,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Force Sage",
+            "hits": [
+              1245
+            ],
+            "total": 1245,
+            "turn": 2,
+            "is_indirect": true
+          },
+          {
+            "spell": "Baroud",
+            "hits": [
+              4825
+            ],
+            "total": 4825,
+            "turn": 2,
+            "is_indirect": true
+          },
+          {
+            "spell": "Baroud",
+            "hits": [
+              3000
+            ],
+            "total": 3000,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Molosse",
+            "hits": [
+              2395
+            ],
+            "total": 2395,
+            "turn": 2,
+            "is_indirect": false
+          }
+        ],
+        "Bilbaukok": [
+          {
+            "spell": "Orbe défensif (Critiques)",
+            "hits": [
+              155
+            ],
+            "total": 155,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Volcan (Critiques)",
+            "hits": [
+              268
+            ],
+            "total": 268,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Orbe défensif (Critiques)",
+            "hits": [
+              154
+            ],
+            "total": 154,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Orbe défensif (Critiques)",
+            "hits": [
+              140
+            ],
+            "total": 140,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Frappe tellurique (Critiques)",
+            "hits": [
+              202
+            ],
+            "total": 202,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Goutte (Critiques)",
+            "hits": [
+              119
+            ],
+            "total": 119,
+            "turn": 2,
+            "is_indirect": false
+          }
+        ],
+        "Chatte-Enbouchinkouin": [
+          {
+            "spell": "Dé six (Critiques)",
+            "hits": [
+              2510
+            ],
+            "total": 2510,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "All in (Critiques)",
+            "hits": [
+              1699
+            ],
+            "total": 1699,
+            "turn": 1,
+            "is_indirect": false
+          },
+          {
+            "spell": "Dé six (Critiques)",
+            "hits": [
+              3256
+            ],
+            "total": 3256,
+            "turn": 2,
+            "is_indirect": false
+          },
+          {
+            "spell": "Bataille",
+            "hits": [
+              1289
+            ],
+            "total": 1289,
+            "turn": 2,
+            "is_indirect": false
+          }
+        ]
+      }
+    }
+  ],
+  "combat_counter": 2,
   "text_color": [
     255,
     255,
     255
   ],
-  "maj_prete_pour_redemarrage": false
+  "maj_prete_pour_redemarrage": false,
+  "history_horizontal": true
 }
