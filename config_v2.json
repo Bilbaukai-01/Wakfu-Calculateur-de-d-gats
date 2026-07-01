@@ -1,185 +1,102 @@
 {
   "log_path": "C:\\Users\\Bilbaukai\\AppData\\Roaming\\zaap\\gamesLogs\\wakfu\\logs\\wakfu_chat.log",
   "zoom_factor": 1.2,
-  "opacity": 0.8,
+  "opacity": 0.9,
   "always_on_top": true,
   "tracked_players": [
     "Chatte-Enbouchinkouin",
     "Bilbaukok",
-    "Tamair-Lachyaine"
+    "Tamair-Lachyaine",
+    "Bilbosa",
+    "Soldier-Heal",
+    "Témala-Taydumask",
+    "Taipav-Enu-Alasoirai",
+    "Karabiss-Tool"
   ],
-  "window_width": 499.1667,
-  "window_height": 648.3333,
+  "window_width": 500.0,
+  "window_height": 650.0,
   "mode": "mono",
   "players_to_include": 1,
   "permanent_archives": [
     {
-      "name": "Combat #1",
-      "players_involved": "Tamair-Lachyaine, Bilbaukok, Chatte-Enbouchinkouin",
+      "name": "Combat (01/07/2026 - 17:15)",
+      "players_involved": "Karabiss-Tool",
       "total_turns": 2,
       "damages": [
         [
-          "Tamair-Lachyaine",
-          17062
-        ],
-        [
-          "Chatte-Enbouchinkouin",
-          8754
-        ],
-        [
-          "Bilbaukok",
-          1038
+          "Karabiss-Tool",
+          59
         ]
       ],
       "details_history": {
-        "Tamair-Lachyaine": [
+        "Karabiss-Tool": [
           {
-            "spell": "Croc-en-jambe",
+            "spell": "Feu ardent",
             "hits": [
-              1298,
-              1299
+              20
             ],
-            "total": 2597,
+            "total": 20,
             "turn": 1,
             "is_indirect": false
           },
           {
-            "spell": "Baroud",
+            "spell": "Courant",
             "hits": [
-              3000
+              19
             ],
-            "total": 3000,
+            "total": 19,
             "turn": 1,
             "is_indirect": false
           },
           {
-            "spell": "Force Sage",
+            "spell": "Feu ardent",
             "hits": [
-              1245
+              20
             ],
-            "total": 1245,
-            "turn": 2,
-            "is_indirect": true
-          },
-          {
-            "spell": "Baroud",
-            "hits": [
-              4825
-            ],
-            "total": 4825,
-            "turn": 2,
-            "is_indirect": true
-          },
-          {
-            "spell": "Baroud",
-            "hits": [
-              3000
-            ],
-            "total": 3000,
-            "turn": 2,
-            "is_indirect": false
-          },
-          {
-            "spell": "Molosse",
-            "hits": [
-              2395
-            ],
-            "total": 2395,
-            "turn": 2,
+            "total": 20,
+            "turn": 1,
             "is_indirect": false
           }
-        ],
-        "Chatte-Enbouchinkouin": [
+        ]
+      }
+    },
+    {
+      "name": "Combat (01/07/2026 - 17:18)",
+      "players_involved": "Karabiss-Tool",
+      "total_turns": 2,
+      "damages": [
+        [
+          "Karabiss-Tool",
+          59
+        ]
+      ],
+      "details_history": {
+        "Karabiss-Tool": [
           {
-            "spell": "Dé six (Critiques)",
+            "spell": "Feu ardent",
             "hits": [
-              2510
+              20
             ],
-            "total": 2510,
+            "total": 20,
             "turn": 1,
             "is_indirect": false
           },
           {
-            "spell": "All in (Critiques)",
+            "spell": "Courant",
             "hits": [
-              1699
+              19
             ],
-            "total": 1699,
+            "total": 19,
             "turn": 1,
             "is_indirect": false
           },
           {
-            "spell": "Dé six (Critiques)",
+            "spell": "Feu ardent",
             "hits": [
-              3256
+              20
             ],
-            "total": 3256,
-            "turn": 2,
-            "is_indirect": false
-          },
-          {
-            "spell": "Bataille",
-            "hits": [
-              1289
-            ],
-            "total": 1289,
-            "turn": 2,
-            "is_indirect": false
-          }
-        ],
-        "Bilbaukok": [
-          {
-            "spell": "Orbe défensif (Critiques)",
-            "hits": [
-              155
-            ],
-            "total": 155,
+            "total": 20,
             "turn": 1,
-            "is_indirect": false
-          },
-          {
-            "spell": "Volcan (Critiques)",
-            "hits": [
-              268
-            ],
-            "total": 268,
-            "turn": 1,
-            "is_indirect": false
-          },
-          {
-            "spell": "Orbe défensif (Critiques)",
-            "hits": [
-              154
-            ],
-            "total": 154,
-            "turn": 1,
-            "is_indirect": false
-          },
-          {
-            "spell": "Orbe défensif (Critiques)",
-            "hits": [
-              140
-            ],
-            "total": 140,
-            "turn": 2,
-            "is_indirect": false
-          },
-          {
-            "spell": "Frappe tellurique (Critiques)",
-            "hits": [
-              202
-            ],
-            "total": 202,
-            "turn": 2,
-            "is_indirect": false
-          },
-          {
-            "spell": "Goutte (Critiques)",
-            "hits": [
-              119
-            ],
-            "total": 119,
-            "turn": 2,
             "is_indirect": false
           }
         ]

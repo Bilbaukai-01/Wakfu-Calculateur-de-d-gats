@@ -58,6 +58,7 @@ pub struct AppConfig {
     pub maj_prete_pour_redemarrage: bool,
     pub history_horizontal: bool,
     
+    
 }
 
 impl Default for AppConfig {
@@ -73,7 +74,7 @@ impl Default for AppConfig {
             players_to_include: 1,
             permanent_archives: Vec::new(),
             combat_counter: 1,
-            opacity: 0.8,
+            opacity: 0.9,
             text_color: [200, 200, 200],
             statut_maj: "Recherche de mise à jour...".to_string(),
             maj_disponible: false,
@@ -106,6 +107,7 @@ pub struct AppState {
     pub is_compact: bool,
     pub last_applied_zoom: f32,
     pub archives: Vec<CombatArchive>,
+    pub session_combats: Vec<CombatArchive>,
     pub permanent_archives: Vec<CombatArchive>,
     pub combat_counter: i32,
     #[serde(skip)]
@@ -143,6 +145,7 @@ impl AppState {
             is_compact: false,
             last_applied_zoom: 1.0,
             archives: Vec::new(),
+            session_combats: Vec::new(),
             permanent_archives: config.permanent_archives.clone(),
             combat_counter: config.combat_counter,
             multi_buffer: HashMap::new(),
@@ -292,6 +295,45 @@ impl AppState {
         self.current_spell = None;
     }
 
+    fn build_current_combat_archive(&self) -> Option<CombatArchive> {
+        if self.total_damage.is_empty() {
+            return None;
+        }
+
+        let mut damages: Vec<(String, i32)> = self.total_damage
+            .iter()
+            .map(|(player, &dmg)| (player.clone(), dmg))
+            .collect();
+
+        damages.sort_by(|a, b| b.1.cmp(&a.1));
+
+        let players_list: Vec<String> = self.visible_players.iter().cloned().collect();
+        let players_involved = if players_list.is_empty() {
+            "Inconnu".to_string()
+        } else {
+            players_list.join(", ")
+        };
+
+        Some(CombatArchive {
+            name: format!("Combat #{}", self.combat_counter),
+            players_involved,
+            total_turns: self.current_turn,
+            damages,
+            details_history: self.history.clone(),
+        })
+    }
+
+    pub fn save_to_session_combats_and_reset(&mut self) {
+        if let Some(archive) = self.build_current_combat_archive() {
+            self.session_combats.push(archive);
+        }
+
+        self.combat_counter += 1;
+        self.config.combat_counter = self.combat_counter;
+        crate::persistence::save_config(&self.config);
+        self.full_reset();
+    }
+
     pub fn save_current_combat(&mut self) {
         if self.total_damage.is_empty() {
             return;
@@ -311,17 +353,20 @@ impl AppState {
             players_list.join(", ")
         };
 
+        // Utilise la date et l'heure actuelle locale dès la sauvegarde en session
+        let date_str = chrono::Local::now().format("%d/%m/%Y - %H:%M").to_string();
+        let combat_name = format!("Combat ({})", date_str);
+
         let archive = CombatArchive {
-            name: format!("Combat #{}", self.combat_counter),
+            name: combat_name,
             players_involved,
             total_turns: self.current_turn,
             damages,
             details_history: self.history.clone(),
         };
 
-        self.archives.push(archive.clone());
-        self.permanent_archives.push(archive);
-        self.config.permanent_archives = self.permanent_archives.clone();
+        // Ajoute à la session temporaire
+        self.session_combats.push(archive);
 
         self.combat_counter += 1;
         self.config.combat_counter = self.combat_counter;
