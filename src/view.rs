@@ -138,7 +138,6 @@ impl eframe::App for MyApp {
             mesh.indices.extend([0, 1, 2, 0, 2, 3]);
             ui.painter().add(egui::Shape::mesh(mesh));
 
-
             ui.add_space(5.0);
             if s.is_compact {
                 ui.centered_and_justified(|ui| {
