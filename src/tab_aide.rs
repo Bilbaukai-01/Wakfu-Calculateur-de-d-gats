@@ -2,10 +2,12 @@ use eframe::egui;
 use crate::model::AppState;
 
 pub fn render(_s: &mut AppState, ui: &mut egui::Ui) {
-    egui::Frame::none()
-        .inner_margin(egui::Margin::same(10.0))
-        .show(ui, |ui| {
-            egui::ScrollArea::vertical().id_source("help_scroll").show(ui, |ui| {
+    // 1. On met la zone de scroll tout au bord à l'extérieur (pour que la barre de scroll soit au bord droit)
+    egui::ScrollArea::vertical().id_source("help_scroll").show(ui, |ui| {
+        // 2. On applique la marge de 10px uniquement au contenu défilable à l'intérieur
+        egui::Frame::none()
+            .inner_margin(egui::Margin::same(10.0))
+            .show(ui, |ui| {
                 ui.vertical(|ui| {
                     // --- SECTION INTRODUCTION (Sans bloc/groupe physique) ---
                     ui.label(egui::RichText::new("Bienvenue sur le Calculateur de Dégâts Wakfu par Bilbaukai !").strong());
@@ -65,5 +67,5 @@ pub fn render(_s: &mut AppState, ui: &mut egui::Ui) {
                     ui.add_space(150.0);
                 });
             });
-        });
+    });
 }

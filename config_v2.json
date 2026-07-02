@@ -1,6 +1,6 @@
 {
   "log_path": "C:\\Users\\Bilbaukai\\AppData\\Roaming\\zaap\\gamesLogs\\wakfu\\logs\\wakfu_chat.log",
-  "zoom_factor": 1.2,
+  "zoom_factor": 1.1,
   "opacity": 0.9,
   "always_on_top": true,
   "tracked_players": [
@@ -13,96 +13,11 @@
     "Taipav-Enu-Alasoirai",
     "Karabiss-Tool"
   ],
-  "window_width": 500.0,
-  "window_height": 650.0,
+  "window_width": 481.81818,
+  "window_height": 750.303,
   "mode": "mono",
   "players_to_include": 1,
-  "permanent_archives": [
-    {
-      "name": "Combat (01/07/2026 - 17:15)",
-      "players_involved": "Karabiss-Tool",
-      "total_turns": 2,
-      "damages": [
-        [
-          "Karabiss-Tool",
-          59
-        ]
-      ],
-      "details_history": {
-        "Karabiss-Tool": [
-          {
-            "spell": "Feu ardent",
-            "hits": [
-              20
-            ],
-            "total": 20,
-            "turn": 1,
-            "is_indirect": false
-          },
-          {
-            "spell": "Courant",
-            "hits": [
-              19
-            ],
-            "total": 19,
-            "turn": 1,
-            "is_indirect": false
-          },
-          {
-            "spell": "Feu ardent",
-            "hits": [
-              20
-            ],
-            "total": 20,
-            "turn": 1,
-            "is_indirect": false
-          }
-        ]
-      }
-    },
-    {
-      "name": "Combat (01/07/2026 - 17:18)",
-      "players_involved": "Karabiss-Tool",
-      "total_turns": 2,
-      "damages": [
-        [
-          "Karabiss-Tool",
-          59
-        ]
-      ],
-      "details_history": {
-        "Karabiss-Tool": [
-          {
-            "spell": "Feu ardent",
-            "hits": [
-              20
-            ],
-            "total": 20,
-            "turn": 1,
-            "is_indirect": false
-          },
-          {
-            "spell": "Courant",
-            "hits": [
-              19
-            ],
-            "total": 19,
-            "turn": 1,
-            "is_indirect": false
-          },
-          {
-            "spell": "Feu ardent",
-            "hits": [
-              20
-            ],
-            "total": 20,
-            "turn": 1,
-            "is_indirect": false
-          }
-        ]
-      }
-    }
-  ],
+  "permanent_archives": [],
   "combat_counter": 1,
   "text_color": [
     200,

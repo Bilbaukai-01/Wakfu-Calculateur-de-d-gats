@@ -65,11 +65,11 @@ impl Default for AppConfig {
     fn default() -> Self {
         Self {
             log_path: "".to_string(),
-            zoom_factor: 1.2,
+            zoom_factor: 1.1,
             always_on_top: true,
             tracked_players: Vec::new(),
             window_width: 500.0,
-            window_height: 650.0,
+            window_height: 750.0,
             mode: "mono".to_string(),
             players_to_include: 1,
             permanent_archives: Vec::new(),

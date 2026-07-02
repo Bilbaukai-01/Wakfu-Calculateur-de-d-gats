@@ -290,7 +290,23 @@ pub fn render(s: &mut AppState, ui: &mut egui::Ui) {
                             }
                         }
                     });
+                    ui.add_space(15.0);
                     
+                    // ==========================================
+                    // RETOURS ET FEEDBACK (Nouveau bouton sous la MAJ)
+                    // ==========================================
+                    if ui.add_sized(
+                        [190.0, 30.0], 
+                        egui::Button::new("💬 Problèmes et Feedback ↗")
+                    )
+                    .on_hover_text("Signaler un bug, proposer une idée ou donner votre avis sur GitHub")
+                    .clicked() {
+                        let url = "https://github.com/Bilbaukai-01/Wakfu-Calculateur-de-d-gats/issues";
+                        ui.ctx().open_url(egui::OpenUrl::new_tab(url));
+                    }
+
+                    // Petit espace final de défilement
+                    ui.add_space(150.0);
                 });
             });
     });
